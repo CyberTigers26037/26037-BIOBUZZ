@@ -1,9 +1,13 @@
-package org.firstinspires.ftc.teamcode.subassembly;
+package org.firstinspires.ftc.teamcode.bottyjames.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.bottyjames.subassembly.BottyJamesClaw;
+import org.firstinspires.ftc.teamcode.bottyjames.subassembly.BottyJamesLinearActuator;
+import org.firstinspires.ftc.teamcode.bottyjames.subassembly.BottyJamesWormDriveArm;
 
 
 @TeleOp(name= "BottyJamesCandyArm")

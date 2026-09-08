@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.subassembly;
+package org.firstinspires.ftc.teamcode.bottyjames.subassembly;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subassembly.ServoSubassembly;
 
 public class BottyJamesElbow extends ServoSubassembly {
     private static final double MIN_SAFE_DEGREES = 0;
