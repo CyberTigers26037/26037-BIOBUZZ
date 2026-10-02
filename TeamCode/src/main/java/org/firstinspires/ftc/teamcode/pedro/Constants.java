@@ -104,8 +104,8 @@ public class Constants {
             c -> {
                 c.name.set("leftFront");
                 c.motorName.set("lf");
-                c.servoName.set("lfTurn");
-                c.servoEncoderName.set("lfTurnEncoder");
+                c.servoName.set("ofTurn");
+                c.servoEncoderName.set("ofTurnEncoder");
                 c.turnController.set(Controller.pid(0.3, 0, 0.005)
                         .plus(Controller.proportionalFeedforward(0)));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
