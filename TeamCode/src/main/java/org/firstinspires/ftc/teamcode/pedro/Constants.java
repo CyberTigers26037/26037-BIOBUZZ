@@ -82,7 +82,7 @@ public class Constants {
 
     public static CoaxialPodConfig rightBack = new CoaxialPodConfig(
             c -> {
-                c.name.set("rightBack");
+                c.name.set("swerveRightBack");
                 c.motorName.set("rb");
                 c.servoName.set("rbTurn");
                 c.servoEncoderName.set("rbTurnEncoder");
@@ -95,7 +95,7 @@ public class Constants {
 
     public static CoaxialPodConfig leftFront = new CoaxialPodConfig(
             c -> {
-                c.name.set("leftFront");
+                c.name.set("swerveLeftFront");
                 c.motorName.set("lf");
                 c.servoName.set("lfTurn");
                 c.servoEncoderName.set("lfTurnEncoder");
@@ -108,7 +108,7 @@ public class Constants {
 
     public static CoaxialPodConfig rightFront = new CoaxialPodConfig(
             c -> {
-                c.name.set("rightFront");
+                c.name.set("swerveRightFront");
                 c.motorName.set("rf");
                 c.servoName.set("rfTurn");
                 c.servoEncoderName.set("rfTurnEncoder");
@@ -121,7 +121,7 @@ public class Constants {
 
     public static CoaxialPodConfig leftBack = new CoaxialPodConfig(
             c -> {
-                c.name.set("leftBack");
+                c.name.set("swerveLeftBack");
                 c.motorName.set("lb");
                 c.servoName.set("lbTurn");
                 c.servoEncoderName.set("lbTurnEncoder");
