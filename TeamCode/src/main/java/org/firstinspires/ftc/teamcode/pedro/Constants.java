@@ -1,14 +1,17 @@
 package org.firstinspires.ftc.teamcode.pedro;
 
+import com.pedropathing.algorithm.Foresight;
 import com.pedropathing.algorithm.ForesightConfig;
 import com.pedropathing.controllers.Controller;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Matrix;
 import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
+import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
 import com.pedropathing.revhub.drivetrains.SwerveConfig;
 import com.pedropathing.revhub.localizers.PinpointConfig;
+import com.pedropathing.revhub.localizers.PinpointLocalizer;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,8 +20,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static Follower create(HardwareMap h) {
-        // return new Follower(Drivetrain, Localizer, Foresight);
-        return null;
+        return new Follower(
+                new PinpointLocalizer(h, localizerConfig),
+                new Mecanum(h, drivetrainConfig),
+                new Foresight(foresightConfig)
+        );
+
 
     }
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
@@ -46,27 +53,27 @@ public class Constants {
 
     public static ForesightConfig foresightConfig = new ForesightConfig(
             c -> {
-                Controller primaryTranslationalForward = Controller.proportional(0.1472743261099644);
-                Controller secondaryTranslationalForward = Controller.proportional(0.05441392825516179);
-                Controller primaryTranslationalLateral = Controller.proportional(0.19791003074622826);
-                Controller secondaryTranslationalLateral = Controller.proportional(0.07312246810731465);
+                Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
+                Controller secondaryTranslationalForward = Controller.proportional(0.0556214886138864);
+                Controller primaryTranslationalLateral = Controller.proportional(0.1972822375468673);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.07289051529509401);
 
                 c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
                 c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
 
-                c.coast.set(Controller.proportionalFeedforward(0.017375166699292434));
-                c.brake.set(Controller.proportionalFeedforward(0.01476889169439857));
+                c.coast.set(Controller.proportionalFeedforward(0.016223893876644743));
+                c.brake.set(Controller.proportionalFeedforward(0.013790309795148031));
 
-                c.headingFeedback.set(Controller.proportional(2.8332053493080704));
-                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.039691692245534246, 0.005394757423252485));
+                c.headingFeedback.set(Controller.proportional(2.7109960647229423));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.03923918500290919, 0.005238250122071822));
 
-                c.linearBrakeCoefficients.set(Matrix.diag(0.05042867430309611, 0.060770975748680525));
-                c.quadraticBrakeCoefficients.set(Matrix.diag(0.001481022262112584, 0.0011710379102574033));
+                c.linearBrakeCoefficients.set(Matrix.diag(0.06691777859993613, 0.05651738468443017));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(0.0010499120508739041, 0.001184877917208147));
 
-                c.maxAchievableForwardVelocity.set(58.72766762341472);
-                c.maxAchievableStrafeVelocity.set(50.96738964557392);
-                c.naturalForwardDeceleration.set(36.28555393231942);
-                c.naturalStrafeDeceleration.set(103.3152383644613);
+                c.maxAchievableForwardVelocity.set(63.005591468932366);
+                c.maxAchievableStrafeVelocity.set(53.046979792969296);
+                c.naturalForwardDeceleration.set(35.00835406004796);
+                c.naturalStrafeDeceleration.set(49.609008938604696);
             }
     );
 
@@ -97,8 +104,8 @@ public class Constants {
             c -> {
                 c.name.set("swerveLeftFront");
                 c.motorName.set("lf");
-                c.servoName.set("lfTurn");
-                c.servoEncoderName.set("lfTurnEncoder");
+                c.servoName.set("ofTurn");
+                c.servoEncoderName.set("ofTurnEncoder");
                 c.turnController.set(Controller.pid(0.3, 0, 0.005)
                         .plus(Controller.proportionalFeedforward(0)));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
