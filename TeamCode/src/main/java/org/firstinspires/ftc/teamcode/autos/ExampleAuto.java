@@ -68,5 +68,6 @@ public class ExampleAuto extends OpMode {
         telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Follower Mode", follower.mode());
         telemetry.update();
+        
     }
 }
