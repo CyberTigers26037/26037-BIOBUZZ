@@ -8,6 +8,7 @@ import com.pedropathing.localization.Localizer;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
+import com.pedropathing.revhub.drivetrains.Swerve;
 import com.pedropathing.tuning.autotune.DisplayName;
 import com.pedropathing.tuning.autotune.Inputs;
 import com.pedropathing.tuning.autotune.Procedure;
@@ -21,6 +22,8 @@ import java.util.function.Supplier;
 
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
+
+import org.firstinspires.ftc.teamcode.pedro.swerve.DrivetrainHelper;
 
 public class Tests extends Procedure {
     enum Test {
@@ -300,10 +303,30 @@ class TestsLocalization extends TuningOpMode<Boolean> {
         waitForStart();
         localizer.setPose(Pose.zero());
 
+        // ANP, 10/3/2026, added debugStringEnabled which
+        // toggles on gamepadX.A and outputs the drivetrain debug info
+        boolean debugStringEnabled = false;
         while (opModeIsActive()) {
-            drivetrain.drive(new DrivePowers(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x), true);
+            if (gamepad1.aWasPressed() || gamepad2.aWasPressed()) {
+                debugStringEnabled = !debugStringEnabled;
+            }
+
+            double forward = -gamepad1.left_stick_y;
+            double strafe = -gamepad1.left_stick_x;
+            double turn = -gamepad1.right_stick_x;
+            // ANP, 10/3/2026, Swerve reverses the strafe and turn internally
+            // which makes Mecanum and Swerve inconsistent.
+            if (drivetrain instanceof Swerve) {
+                strafe = -strafe;
+                turn = -turn;
+            }
+            drivetrain.drive(new DrivePowers(forward, strafe, turn), true);
             localizer.update();
             telemetry.addData("Pose", localizer.pose());
+            if (debugStringEnabled) {
+                telemetry.addLine("Drivetrain Debug String:\n" +
+                        DrivetrainHelper.debugString(drivetrain));
+            }
             telemetry.update();
         }
         return true;
