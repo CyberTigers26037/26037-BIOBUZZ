@@ -20,9 +20,9 @@ import org.firstinspires.ftc.teamcode.pedro.util.Timer;
 @TeleOp
 public class SwervePIDTuner extends OpMode {
     private enum TUNING_PARAMETER { P, I, D }
-    private static final double TUNING_ADJUSTMENT_P = 0.001;
-    private static final double TUNING_ADJUSTMENT_I = 0.00001;
-    private static final double TUNING_ADJUSTMENT_D = 0.0001;
+    private static final double TUNING_ADJUSTMENT_P = 0.1;
+    private static final double TUNING_ADJUSTMENT_I = 0.01;
+    private static final double TUNING_ADJUSTMENT_D = 0.005;
     private static final TuningMode mode = TuningMode.LEFT_FRONT;
 
     private TelemetryManager telemetryM;
@@ -40,6 +40,7 @@ public class SwervePIDTuner extends OpMode {
 
     @Override
     public void init() {
+        inputTimer = new Timer(0.25, true);
         switch (mode) {
             case LEFT_FRONT:
                 config = Constants.leftFront;
