@@ -31,9 +31,9 @@ public class SwervePIDTuner extends OpMode {
     private CoaxialPodConfig config;
     private Timer inputTimer;
 
-    public static double P;
-    public static double I;
-    public static double D;
+    public static double P  = 0.3;
+    public static double I = 0.0;
+    public static double D = 0.005;
     public static double F;
 
     private TUNING_PARAMETER tuningParameter = TUNING_PARAMETER.P;
