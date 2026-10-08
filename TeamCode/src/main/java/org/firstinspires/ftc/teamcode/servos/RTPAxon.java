@@ -12,6 +12,8 @@ public class RTPAxon {
     private final AnalogInput servoEncoder;
     // Continuous rotation servo
     private final CRServo servo;
+    // Whether to move to the closest angle to the requested angle
+    private final boolean useClosestAngle;
     // Current power applied to servo
     private double power;
     // Maximum allowed power
@@ -22,7 +24,6 @@ public class RTPAxon {
     private double totalRotation;
     // Target rotation in degrees
     private double targetRotation;
-    private boolean useClosestAngle;
 
     // PID controller coefficients and state
     private double kP;
