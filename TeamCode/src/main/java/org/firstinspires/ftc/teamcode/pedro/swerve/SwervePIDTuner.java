@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedro.swerve;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.controllers.Controller;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
  * You should use this to tune your swerve pod PID values
  * @author Havish Sripada
  */
+@Configurable
 @SuppressWarnings("unused")
 @TeleOp
 public class SwervePIDTuner extends OpMode {
@@ -31,6 +33,7 @@ public class SwervePIDTuner extends OpMode {
     private CoaxialPod pod;
     private CoaxialPodConfig config;
     private long lastInputMillis;
+    private SwervePIDController pidController;
 
     public static double P  = 0.3;
     public static double I = 0.0;
@@ -61,6 +64,9 @@ public class SwervePIDTuner extends OpMode {
         }
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
+        pidController = new SwervePIDController(P, I, D);
+        config.turnController.set(pidController.plus(Controller.proportionalFeedforward(F)));
     }
 
     private double convertTargetAngle(double targetAngleRad) {
@@ -137,7 +143,7 @@ public class SwervePIDTuner extends OpMode {
             }
         }
 
-        config.turnController.set(Controller.pid(P, I, D).plus(Controller.proportionalFeedforward(F)));
+        pidController.setPID(P, I, D);
 
         if (gamepad1.dpadUpWasPressed()) {
             targetAngle = Math.toRadians(0);
