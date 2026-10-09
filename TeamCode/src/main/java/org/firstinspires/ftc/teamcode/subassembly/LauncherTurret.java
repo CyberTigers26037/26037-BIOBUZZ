@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subassembly;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -27,7 +25,6 @@ public class LauncherTurret {
     }
 
     public void loop() {
-        telemetry.addData("limitSwitch", limitSwitch.getState());
         if (!initialized) {
             turretServo.setPower(-0.1);
 
@@ -41,10 +38,11 @@ public class LauncherTurret {
         turretServo.update();
     }
     public void setTurretAngle(double angle) {
-            turretServo.setTargetRotation(angle*2.75);
+        turretServo.setTargetRotation(angle*2.75);
     }
 
     public void outputTelemetry(Telemetry telemetry) {
+        telemetry.addData("limitSwitch", limitSwitch.getState());
         telemetry.addLine(turretServo.log());
     }
 }
