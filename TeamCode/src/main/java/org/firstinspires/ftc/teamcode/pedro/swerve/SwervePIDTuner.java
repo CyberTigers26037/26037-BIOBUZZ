@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
-import org.firstinspires.ftc.teamcode.pedro.util.Timer;
 
 /**
  * This is the SwervePIDTuner
@@ -25,13 +24,13 @@ public class SwervePIDTuner extends OpMode {
     private static final double TUNING_ADJUSTMENT_I = 0.01;
     private static final double TUNING_ADJUSTMENT_D = 0.005;
     private static final TuningMode mode = TuningMode.LEFT_FRONT;
+    private static final int INPUT_TIMEOUT_MILLIS = 250;
 
     private TelemetryManager telemetryM;
     public static double targetAngle = 0;
-    private double podCorrectedTargetAngle = 0;
     private CoaxialPod pod;
     private CoaxialPodConfig config;
-    private Timer inputTimer;
+    private long lastInputMillis;
 
     public static double P  = 0.3;
     public static double I = 0.0;
@@ -42,7 +41,6 @@ public class SwervePIDTuner extends OpMode {
 
     @Override
     public void init() {
-        inputTimer = new Timer(0.25, true);
         switch (mode) {
             case LEFT_FRONT:
                 config = Constants.leftFront;
@@ -97,8 +95,7 @@ public class SwervePIDTuner extends OpMode {
             errorRad = signedRad;
         }
 
-        double setpointRad = actualRad + errorRad;
-        return setpointRad;
+        return actualRad + errorRad;
     }
 
     @Override
@@ -113,13 +110,14 @@ public class SwervePIDTuner extends OpMode {
         telemetry.addLine();
 
         double tuningAdjustment;
-        if ((gamepad1.left_stick_y < -0.5) && inputTimer.isExpired()) {
+        boolean inputTimerExpired = System.currentTimeMillis() - lastInputMillis > INPUT_TIMEOUT_MILLIS;
+        if ((gamepad1.left_stick_y < -0.5) && inputTimerExpired) {
             tuningAdjustment = 1;
-            inputTimer.start();
+            lastInputMillis = System.currentTimeMillis();
         }
-        else if ((gamepad1.left_stick_y > 0.5) && inputTimer.isExpired()) {
+        else if ((gamepad1.left_stick_y > 0.5) && inputTimerExpired) {
             tuningAdjustment = -1;
-            inputTimer.start();
+            lastInputMillis = System.currentTimeMillis();
         }
         else {
             tuningAdjustment = 0;
@@ -154,7 +152,7 @@ public class SwervePIDTuner extends OpMode {
             targetAngle = Math.toRadians(270);
         }
 
-        podCorrectedTargetAngle = convertTargetAngle(targetAngle);
+        double podCorrectedTargetAngle = convertTargetAngle(targetAngle);
 
         pod.move(targetAngle, 0, false);
 
