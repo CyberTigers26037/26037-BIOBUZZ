@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.pedro.swerve;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import com.pedropathing.controllers.Controller;
 import com.pedropathing.revhub.drivetrains.CoaxialPod;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
 import com.pedropathing.utils.Angle;
@@ -21,11 +20,6 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 @SuppressWarnings("unused")
 @TeleOp
 public class SwervePIDTuner extends OpMode {
-    private enum TUNING_PARAMETER { P, I, D }
-    private static final double TUNING_ADJUSTMENT_P = 0.1;
-    private static final double TUNING_ADJUSTMENT_I = 0.01;
-    private static final double TUNING_ADJUSTMENT_D = 0.005;
-    private static final TuningMode mode = TuningMode.LEFT_FRONT;
     private static final int INPUT_TIMEOUT_MILLIS = 250;
 
     private TelemetryManager telemetryM;
@@ -33,18 +27,25 @@ public class SwervePIDTuner extends OpMode {
     private CoaxialPod pod;
     private CoaxialPodConfig config;
     private long lastInputMillis;
-    private SwervePIDController pidController;
+    private SwervePIDFController pidController;
+    private PodSelection podSelection = PodSelection.RIGHT_FRONT;
 
-    public static double P  = 0.3;
+    public static double P = 0.35;
     public static double I = 0.0;
-    public static double D = 0.005;
-    public static double F;
-
-    private TUNING_PARAMETER tuningParameter = TUNING_PARAMETER.P;
+    public static double D = 0.020;
+    public static double F = 0.025;
+    public static double A = 0.3;
+    public static double ANGLE_DELTA = 90;
 
     @Override
     public void init() {
-        switch (mode) {
+        setupPodSelection();
+
+        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+    }
+
+    private void setupPodSelection() {
+        switch (podSelection) {
             case LEFT_FRONT:
                 config = Constants.leftFront;
                 pod = new CoaxialPod(hardwareMap, Constants.leftFront);
@@ -63,10 +64,8 @@ public class SwervePIDTuner extends OpMode {
                 break;
         }
 
-        telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
-
-        pidController = new SwervePIDController(P, I, D);
-        config.turnController.set(pidController.plus(Controller.proportionalFeedforward(F)));
+        pidController = new SwervePIDFController(P, I, D, F, A);
+        config.turnController.set(pidController);
     }
 
     private double convertTargetAngle(double targetAngleRad) {
@@ -101,69 +100,51 @@ public class SwervePIDTuner extends OpMode {
             errorRad = signedRad;
         }
 
+        telemetryM.addData("actualRad", Math.toDegrees(actualRad));
+        telemetryM.addData("errorRad", Math.toDegrees(errorRad));
+
         return actualRad + errorRad;
     }
 
     @Override
     public void loop() {
-        if (gamepad1.xWasPressed()) tuningParameter = TUNING_PARAMETER.P;
-        if (gamepad1.yWasPressed()) tuningParameter = TUNING_PARAMETER.I;
-        if (gamepad1.bWasPressed()) tuningParameter = TUNING_PARAMETER.D;
+        PodSelection newPodSelection = podSelection;
+        if (gamepad1.xWasPressed()) podSelection = PodSelection.LEFT_FRONT;
+        if (gamepad1.yWasPressed()) podSelection = PodSelection.RIGHT_FRONT;
+        if (gamepad1.aWasPressed()) podSelection = PodSelection.LEFT_BACK;
+        if (gamepad1.bWasPressed()) podSelection = PodSelection.RIGHT_BACK;
+        if (newPodSelection != podSelection) {
+            setupPodSelection();
+        }
 
         telemetry.addLine("Dpad to set target angle: U 0, R 90, D 180, L 270");
-        telemetry.addLine("X to tune P, Y to tune I, B to tune D");
-        telemetry.addLine("Right Stick Y to drive motor");
+        telemetry.addLine("X to tune LF, Y to tune RF, A to tune LB, B to tune RB");
         telemetry.addLine();
 
-        double tuningAdjustment;
-        boolean inputTimerExpired = System.currentTimeMillis() - lastInputMillis > INPUT_TIMEOUT_MILLIS;
-        if ((gamepad1.left_stick_y < -0.5) && inputTimerExpired) {
-            tuningAdjustment = 1;
-            lastInputMillis = System.currentTimeMillis();
-        }
-        else if ((gamepad1.left_stick_y > 0.5) && inputTimerExpired) {
-            tuningAdjustment = -1;
-            lastInputMillis = System.currentTimeMillis();
-        }
-        else {
-            tuningAdjustment = 0;
-        }
-
-        if (tuningAdjustment != 0) {
-            switch (tuningParameter) {
-                case P:
-                    P += (tuningAdjustment * TUNING_ADJUSTMENT_P);
-                    break;
-                case I:
-                    I += (tuningAdjustment * TUNING_ADJUSTMENT_I);
-                    break;
-                case D:
-                    D += (tuningAdjustment * TUNING_ADJUSTMENT_D);
-                    break;
-            }
-        }
-
-        pidController.setPID(P, I, D);
+        pidController.setPIDF(P, I, D, F, A);
 
         if (gamepad1.dpadUpWasPressed()) {
             targetAngle = Math.toRadians(0);
+            pidController.reset();
         }
         if (gamepad1.dpadRightWasPressed()) {
-            targetAngle = Math.toRadians(90);
+            targetAngle = Math.toRadians(ANGLE_DELTA);
+            pidController.reset();
         }
         if (gamepad1.dpadDownWasPressed()) {
-            targetAngle = Math.toRadians(180);
+            targetAngle = Math.toRadians(ANGLE_DELTA*2);
+            pidController.reset();
         }
         if (gamepad1.dpadLeftWasPressed()) {
-            targetAngle = Math.toRadians(270);
+            targetAngle = Math.toRadians(ANGLE_DELTA*3);
+            pidController.reset();
         }
 
         double podCorrectedTargetAngle = convertTargetAngle(targetAngle);
 
         pod.move(targetAngle, 0, false);
 
-        telemetry.addData("Currently Tuning", tuningParameter);
-        telemetry.addLine("Left Stick Y to Adjust");
+        telemetry.addData("Currently Tuning", podSelection);
         telemetry.addLine();
 
         telemetry.addData("P", P);
@@ -175,7 +156,7 @@ public class SwervePIDTuner extends OpMode {
         telemetryM.update();
     }
 
-    private enum TuningMode {
+    private enum PodSelection {
         LEFT_FRONT,
         RIGHT_FRONT,
         LEFT_BACK,

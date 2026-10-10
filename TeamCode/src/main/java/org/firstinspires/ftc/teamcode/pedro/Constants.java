@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.pedro;
 
 import com.pedropathing.algorithm.Foresight;
 import com.pedropathing.algorithm.ForesightConfig;
-import com.pedropathing.controllers.Controller;
 import com.pedropathing.drivetrain.Drivetrain;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Vector2D;
@@ -20,6 +19,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.config.RobotConfig;
+import org.firstinspires.ftc.teamcode.pedro.swerve.SwervePIDFController;
 
 public class Constants {
     public static Follower create(HardwareMap h) {
@@ -83,14 +83,12 @@ public class Constants {
                 c.motorName.set("lf");
                 c.servoName.set("lfTurn");
                 c.servoEncoderName.set("lfTurnEncoder");
-                c.turnController.set(Controller.pid(0.3, 0, 0.005)
-                        .plus(Controller.proportionalFeedforward(0)));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.006);
                 c.analogMaxVoltage.set(3.212);
                 c.podOffset.set(Vector2D.cartesian(1675,1515 ));
-                //c.angleOffsetRad.set(Math.toRadians(92.0));
                 c.angleOffsetRad.set(Math.toRadians(274));
                 c.encoderReversed.set(true);
             }
@@ -102,14 +100,12 @@ public class Constants {
                 c.motorName.set("rf");
                 c.servoName.set("rfTurn");
                 c.servoEncoderName.set("rfTurnEncoder");
-                c.turnController.set(Controller.pid(0.3, 0, 0.005)
-                        .plus(Controller.proportionalFeedforward(0)));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
                 c.analogMaxVoltage.set(3.199);
                 c.podOffset.set(Vector2D.cartesian(1675,-1515 ));
-               // c.angleOffsetRad.set(Math.toRadians(37.0));
                 c.angleOffsetRad.set(Math.toRadians(218.6));
                 c.encoderReversed.set(true);
             }
@@ -121,14 +117,12 @@ public class Constants {
                 c.motorName.set("lb");
                 c.servoName.set("lbTurn");
                 c.servoEncoderName.set("lbTurnEncoder");
-                c.turnController.set(Controller.pid(0.3, 0, 0.005)
-                        .plus(Controller.proportionalFeedforward(0)));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
                 c.analogMaxVoltage.set(3.199);
                 c.podOffset.set(Vector2D.cartesian(-1675,1515 ));
-               // c.angleOffsetRad.set(Math.toRadians(115.6));
                 c.angleOffsetRad.set(Math.toRadians(299));
                 c.encoderReversed.set(true);
             }
@@ -140,14 +134,12 @@ public class Constants {
                 c.motorName.set("rb");
                 c.servoName.set("rbTurn");
                 c.servoEncoderName.set("rbTurnEncoder");
-                c.turnController.set(Controller.pid(0.3, 0, 0.005)
-                        .plus(Controller.proportionalFeedforward(0)));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.002);
                 c.analogMaxVoltage.set(3.219);
                 c.podOffset.set(Vector2D.cartesian(-1675,-1515 ));
-               // c.angleOffsetRad.set(Math.toRadians(148.3));
                 c.angleOffsetRad.set(Math.toRadians(322.9));
                 c.encoderReversed.set(true);
             }
