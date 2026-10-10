@@ -4,6 +4,7 @@ import com.pedropathing.algorithm.ForesightConfig;
 import com.pedropathing.controllers.Controller;
 import com.pedropathing.math.Matrix;
 import com.pedropathing.math.Vector2D;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.util.Device;
 
 public class RobotConfig {
@@ -18,6 +19,8 @@ public class RobotConfig {
     private static boolean isMecanumChassis;
     private static double xPodOffset;
     private static double yPodOffset;
+    private static GoBildaPinpointDriver.EncoderDirection xPodDirection;
+    private static GoBildaPinpointDriver.EncoderDirection yPodDirection;
     private static ForesightConfig foresightConfig;
 
     @SuppressWarnings("unused")
@@ -57,6 +60,8 @@ public class RobotConfig {
         isMecanumChassis = false;
         xPodOffset = 96.0;
         yPodOffset = -194.5;
+        xPodDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         foresightConfig = new ForesightConfig(
             c -> {
                 Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
@@ -91,6 +96,8 @@ public class RobotConfig {
         isSwerveChassis = false;
         xPodOffset = -84.0;
         yPodOffset = -168.0;
+        xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         foresightConfig = new ForesightConfig(
             c -> {
                 Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
@@ -125,6 +132,8 @@ public class RobotConfig {
         isSwerveChassis = false;
         xPodOffset = -84.0;
         yPodOffset = -168.0;
+        xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         foresightConfig = new ForesightConfig(
             c -> {
                 Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
@@ -180,5 +189,17 @@ public class RobotConfig {
         init();
 
         return yPodOffset;
+    }
+
+    public static GoBildaPinpointDriver.EncoderDirection getXPodDirection() {
+        init();
+
+        return xPodDirection;
+    }
+
+    public static GoBildaPinpointDriver.EncoderDirection getYPodDirection() {
+        init();
+
+        return yPodDirection;
     }
 }
