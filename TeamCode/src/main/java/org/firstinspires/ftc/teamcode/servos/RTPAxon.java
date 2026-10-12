@@ -182,7 +182,7 @@ public class RTPAxon {
     // Set target rotation and reset PID
     public void setTargetRotation(double target) {
         targetRotation = useClosestAngle ? getClosestAngle(target) : target;
-        resetPID();
+        //resetPID();
     }
 
     // Get current angle from encoder (in degrees)
