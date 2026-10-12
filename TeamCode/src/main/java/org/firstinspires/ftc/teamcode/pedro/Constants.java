@@ -61,8 +61,8 @@ public class Constants {
         c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         c.xPodOffset.set(RobotConfig.getXPodOffset());
         c.yPodOffset.set(RobotConfig.getYPodOffset());
-        c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        c.xPodDirection.set(RobotConfig.getXPodDirection());
+        c.yPodDirection.set(RobotConfig.getYPodDirection());
         c.globalDistanceUnit.set(DistanceUnit.INCH);
         c.offsetUnits.set(DistanceUnit.MM);
     });
@@ -83,7 +83,7 @@ public class Constants {
                 c.motorName.set("lf");
                 c.servoName.set("lfTurn");
                 c.servoEncoderName.set("lfTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.355, 0.0, 0.021, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.006);
@@ -100,7 +100,7 @@ public class Constants {
                 c.motorName.set("rf");
                 c.servoName.set("rfTurn");
                 c.servoEncoderName.set("rfTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.36, 0.0, 0.0265, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
@@ -117,7 +117,7 @@ public class Constants {
                 c.motorName.set("lb");
                 c.servoName.set("lbTurn");
                 c.servoEncoderName.set("lbTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.37, 0.0, 0.0186, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
@@ -134,7 +134,7 @@ public class Constants {
                 c.motorName.set("rb");
                 c.servoName.set("rbTurn");
                 c.servoEncoderName.set("rbTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.020, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.36, 0.0, 0.024, 0.025, 0.3));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.002);

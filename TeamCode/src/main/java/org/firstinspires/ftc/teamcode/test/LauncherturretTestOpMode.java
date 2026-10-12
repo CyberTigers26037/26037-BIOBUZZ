@@ -7,29 +7,42 @@ import org.firstinspires.ftc.teamcode.subassembly.LauncherTurret;
 @SuppressWarnings("unused")
 @TeleOp
 public class LauncherturretTestOpMode extends OpMode {
-    private LauncherTurret launcherTurret;
+    private LauncherTurret launcherTurret1;
+    private LauncherTurret launcherTurret2;
 
     @Override
     public void init() {
-        launcherTurret = new LauncherTurret(hardwareMap);
+
+        launcherTurret1 = new LauncherTurret(hardwareMap, "1");
+        launcherTurret2 = new LauncherTurret(hardwareMap, "2");
     }
 
     @Override
     public void loop() {
         if (gamepad1.dpadRightWasPressed()) {
-            launcherTurret.setTurretAngle(0);
+            launcherTurret1.setTurretAngle(0);
+            launcherTurret2.setTurretAngle(0);
         }
         if (gamepad1.dpadUpWasPressed()) {
-            launcherTurret.setTurretAngle(90);
+            launcherTurret1.setTurretAngle(90);
+            launcherTurret2.setTurretAngle(90);
         }
         if (gamepad1.dpadLeftWasPressed()) {
-            launcherTurret.setTurretAngle(180);
+            launcherTurret1.setTurretAngle(180);
+            launcherTurret2.setTurretAngle(180);
         }
         if (gamepad1.dpadDownWasPressed()) {
-            launcherTurret.setTurretAngle(270);
+            launcherTurret1.setTurretAngle(270);
+            launcherTurret2.setTurretAngle(270);
         }
-        launcherTurret.loop();
+        if (gamepad1.rightTriggerWasPressed()) {
+            launcherTurret1.toggleLauncher();
+            launcherTurret2.toggleLauncher();
+        }
+        launcherTurret1.loop();
+        launcherTurret2.loop();
 
-        launcherTurret.outputTelemetry(telemetry);
+        launcherTurret1.outputTelemetry(telemetry);
+        launcherTurret2.outputTelemetry(telemetry);
     }
 }
