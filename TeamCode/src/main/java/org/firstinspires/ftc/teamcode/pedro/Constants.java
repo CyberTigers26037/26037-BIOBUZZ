@@ -9,7 +9,6 @@ import com.pedropathing.revhub.drivetrains.CoaxialPod;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
 import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
-import com.pedropathing.revhub.drivetrains.Swerve;
 import com.pedropathing.revhub.drivetrains.SwerveConfig;
 import com.pedropathing.revhub.localizers.PinpointConfig;
 import com.pedropathing.revhub.localizers.PinpointLocalizer;
@@ -19,6 +18,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.config.RobotConfig;
+import org.firstinspires.ftc.teamcode.pedro.swerve.CyberTigersSwerve;
 import org.firstinspires.ftc.teamcode.pedro.swerve.SwervePIDFController;
 
 public class Constants {
@@ -39,7 +39,7 @@ public class Constants {
             CoaxialPod rightFrontPod = new CoaxialPod(h, rightFront);
             CoaxialPod leftBackPod = new CoaxialPod(h, leftBack);
             CoaxialPod rightBackPod = new CoaxialPod(h, rightBack);
-            return new Swerve(h, swerveConfig,
+            return new CyberTigersSwerve(h, swerveConfig,
                 leftFrontPod, rightFrontPod, leftBackPod, rightBackPod);
         }
     }
