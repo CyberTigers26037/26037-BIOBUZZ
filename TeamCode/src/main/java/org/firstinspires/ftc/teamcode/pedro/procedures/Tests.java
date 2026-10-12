@@ -8,7 +8,6 @@ import com.pedropathing.localization.Localizer;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
-import com.pedropathing.revhub.drivetrains.Swerve;
 import com.pedropathing.tuning.autotune.DisplayName;
 import com.pedropathing.tuning.autotune.Inputs;
 import com.pedropathing.tuning.autotune.Procedure;
@@ -314,12 +313,6 @@ class TestsLocalization extends TuningOpMode<Boolean> {
             double forward = -gamepad1.left_stick_y;
             double strafe = -gamepad1.left_stick_x;
             double turn = -gamepad1.right_stick_x;
-            // ANP, 10/3/2026, Swerve reverses the strafe and turn internally
-            // which makes Mecanum and Swerve inconsistent.
-            if (drivetrain instanceof Swerve) {
-                strafe = -strafe;
-                turn = -turn;
-            }
             drivetrain.drive(new DrivePowers(forward, strafe, turn), true);
             localizer.update();
             telemetry.addData("Pose", localizer.pose());
