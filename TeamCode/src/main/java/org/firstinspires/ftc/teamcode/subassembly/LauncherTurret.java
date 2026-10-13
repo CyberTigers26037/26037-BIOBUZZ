@@ -9,6 +9,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.servos.RTPAxon;
 
 public class LauncherTurret {
+    // Device Config Constants
+    private static final double SERVO_DEG_PER_TURRET_DEG = 2.75;
+
     private DigitalChannel limitSwitch;
     private boolean initialized;
     private RTPAxon turretServo;
@@ -42,8 +45,9 @@ public class LauncherTurret {
         turretServo.update();
     }
     public void setTurretAngle(double angle) {
-        turretServo.setTargetRotation(angle*2.75);
+        turretServo.setTargetRotation(angle * SERVO_DEG_PER_TURRET_DEG);
     }
+
     public void toggleLauncher () {
         if (launcher.isRunning()) {
             launcher.stopFlywheelMotor();
