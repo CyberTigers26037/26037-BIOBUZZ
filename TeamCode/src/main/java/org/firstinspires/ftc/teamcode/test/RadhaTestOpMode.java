@@ -56,6 +56,7 @@ public class RadhaTestOpMode extends OpMode {
 
     // Set the angles:
     launcherTurret1.setTurretAngle(turret1Angle);
+    launcherTurret2.setTurretAngle(turret1Angle);
 
     // Check if the triggers were pressed
     if (gamepad1.rightTriggerWasPressed()) {
@@ -65,7 +66,7 @@ public class RadhaTestOpMode extends OpMode {
 
     // Start the loops
     launcherTurret1.loop();
-    // launcherTurret2.loop();
+    launcherTurret2.loop();
 
     telemetry.addData("turret1Angle", turret1Angle);
 
