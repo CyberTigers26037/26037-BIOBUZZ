@@ -45,6 +45,8 @@ public class LauncherTurret {
         turretServo.update();
     }
     public void setTurretAngle(double angle) {
+        if (!initialized) return;
+
         turretServo.setTargetRotation(angle * SERVO_DEG_PER_TURRET_DEG);
     }
 
