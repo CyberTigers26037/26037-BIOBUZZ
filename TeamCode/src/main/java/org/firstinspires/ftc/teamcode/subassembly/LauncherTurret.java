@@ -34,6 +34,7 @@ public class LauncherTurret {
     public void loop() {
         if (!initialized) {
             turretServo.setPower(-0.1);
+            turretServo.trackAngle();
 
             if (limitSwitch.getState()) {
                 turretServo.setPower(0);
@@ -43,6 +44,15 @@ public class LauncherTurret {
             return;
         }
         turretServo.update();
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public synchronized void rehome() {
+        initialized = false;
+        turretServo.setPower(0);
     }
     public void setTurretAngle(double angle) {
         if (!initialized) return;
@@ -61,6 +71,7 @@ public class LauncherTurret {
 
     public void outputTelemetry(Telemetry telemetry) {
         telemetry.addData("limitSwitch" + deviceNumber, limitSwitch.getState());
+        telemetry.addData("isInitialized" + deviceNumber, isInitialized());
         telemetry.addLine(turretServo.log());
     }
 }

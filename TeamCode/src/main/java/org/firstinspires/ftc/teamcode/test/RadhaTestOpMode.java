@@ -17,8 +17,7 @@ public class RadhaTestOpMode extends OpMode {
 
   private LauncherTurret launcherTurret1;
   private LauncherTurret launcherTurret2;
-  private double turret1Angle = 0;
-  private double turret2Angle = 0;
+  private double turretsAngle = 0;
   private final ElapsedTime loopTimer = new ElapsedTime();
 
   @Override
@@ -41,22 +40,22 @@ public class RadhaTestOpMode extends OpMode {
     loopTimer.reset();
 
     // Set the angle if we are using the gamepads
-    turret1Angle = stepAngle(turret1Angle, gamepad1.left_stick_x, dt);
+    turretsAngle = stepAngle(turretsAngle, gamepad1.left_stick_x, dt);
 
     // dpads override any of the above
     if (gamepad1.dpadRightWasPressed()) {
-      turret1Angle = 0;
+      turretsAngle = 0;
     } else if (gamepad1.dpadUpWasPressed()) {
-      turret1Angle = 90;
+      turretsAngle = 90;
     } else if (gamepad1.dpadLeftWasPressed()) {
-      turret1Angle = 180;
+      turretsAngle = 180;
     } else if (gamepad1.dpadDownWasPressed()) {
-      turret1Angle = 270;
+      turretsAngle = 270;
     }
 
     // Set the angles:
-    launcherTurret1.setTurretAngle(turret1Angle);
-    launcherTurret2.setTurretAngle(turret1Angle);
+    launcherTurret1.setTurretAngle(turretsAngle);
+    launcherTurret2.setTurretAngle(turretsAngle);
 
     // Check if the triggers were pressed
     if (gamepad1.rightTriggerWasPressed()) {
@@ -64,11 +63,19 @@ public class RadhaTestOpMode extends OpMode {
       launcherTurret2.toggleLauncher();
     }
 
+    // Rehome with top two bumper presses
+    if (gamepad1.left_bumper && gamepad1.rightBumperWasPressed()) {
+      // Home
+      launcherTurret1.rehome();
+      launcherTurret2.rehome();
+      turretsAngle = 0;
+    }
+
     // Start the loops
     launcherTurret1.loop();
     launcherTurret2.loop();
 
-    telemetry.addData("turret1Angle", turret1Angle);
+    telemetry.addData("turret1Angle", turretsAngle);
 
     launcherTurret1.outputTelemetry(telemetry);
     launcherTurret2.outputTelemetry(telemetry);

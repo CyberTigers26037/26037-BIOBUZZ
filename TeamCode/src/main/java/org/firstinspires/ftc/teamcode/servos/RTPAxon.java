@@ -76,7 +76,7 @@ public class RTPAxon {
     }
 
     // Set power to servo, respecting direction and maxPower
-    public void setPower(double power) {
+    public synchronized void setPower(double power) {
         this.power = Math.max(-maxPower, Math.min(maxPower, power));
         servo.setPower(this.power);
     }
@@ -183,7 +183,7 @@ public class RTPAxon {
     }
 
     // Set target rotation and reset PID
-    public void setTargetRotation(double target) {
+    public synchronized void setTargetRotation(double target) {
         targetRotation = useClosestAngle ? getClosestAngle(target) : target;
         //resetPID();
     }
@@ -191,7 +191,7 @@ public class RTPAxon {
     // Get current angle from encoder (in degrees)
     public double getCurrentAngle() {
         if (servoEncoder == null) return 0;
-        return (servoEncoder.getVoltage() / 3.3) * 360;
+        return (servoEncoder.getVoltage() / servoEncoder.getMaxVoltage()) * 360;
     }
 
     // Check if servo is at target (default tolerance)
@@ -225,21 +225,9 @@ public class RTPAxon {
 
     // Main update loop: updates rotation, computes PID, applies power
     public synchronized void update() {
-        double currentAngle = getCurrentAngle();
-        double angleDifference = currentAngle - previousAngle;
-
-        // Handle wraparound at 0/360 degrees
-        if (angleDifference > 180) {
-            //angleDifference -= 360;
-            cliffs--;
-        } else if (angleDifference < -180) {
-            //angleDifference += 360;
-            cliffs++;
+        if ( !trackAngle() ) {
+            return; //keep the power for this loop instead of reacting to a bad reading
         }
-
-        // Update total rotation with wraparound correction
-        totalRotation = currentAngle - homeAngle + cliffs * 360;
-        previousAngle = currentAngle;
 
         double dt = pidTimer.seconds();
         pidTimer.reset();
@@ -282,9 +270,52 @@ public class RTPAxon {
         }
     }
 
-    public void resetHomeAngle() {
+    public double lastHomingError;
+    public synchronized void resetHomeAngle() {
+        trackAngle();
+        lastHomingError = totalRotation;
         homeAngle = getCurrentAngle();
+        previousAngle = homeAngle;
+        cliffs = 0;
+        totalRotation = 0;
+        targetRotation = 0;
+        resetPID();
     }
+
+    // Largest believable servo movement between two loops, in servo degrees
+    private static final double MAX_STEP_DEG = 60;
+    // After this many rejected readings in a row, trust the encoder again so we can't get stuck
+    private static final int MAX_REJECTED_READINGS = 3;
+    private int rejectedReadings = 0;
+
+    // Returns false if the reading was rejected as a glitch
+    public synchronized boolean trackAngle() {
+        double currentAngle = getCurrentAngle();
+        double angleDifference = currentAngle - previousAngle;
+
+        // Take the shortest path, so a 0/360 crossing looks like a small step
+        int wrap = 0;
+        if (angleDifference > 180) {
+            angleDifference -= 360;
+            wrap = -1;
+        } else if (angleDifference < -180) {
+            angleDifference += 360;
+            wrap = 1;
+        }
+
+        // A big step can't be real motion; it's a reading caught mid-wrap
+        if (Math.abs(angleDifference) > MAX_STEP_DEG && rejectedReadings < MAX_REJECTED_READINGS) {
+            rejectedReadings++;
+            return false;
+        }
+        rejectedReadings = 0;
+
+        cliffs += wrap;
+        totalRotation = currentAngle - homeAngle + cliffs * 360;
+        previousAngle = currentAngle;
+        return true;
+    }
+
 
     // Log current state for telemetry/debug
     @SuppressLint("DefaultLocale")
