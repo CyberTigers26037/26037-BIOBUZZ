@@ -14,6 +14,8 @@ public class RTPAxon {
     private final CRServo servo;
     // Whether to move to the closest angle to the requested angle
     private final boolean useClosestAngle;
+    private final String logPrefix;
+
     // Current power applied to servo
     private double power;
     // Maximum allowed power
@@ -39,11 +41,12 @@ public class RTPAxon {
     public double homeAngle;
 
     // Basic constructor, defaults to FORWARD direction
-    public RTPAxon(CRServo servo, AnalogInput encoder, double homeAngle, boolean useClosestAngle) {
+    public RTPAxon(CRServo servo, AnalogInput encoder, double homeAngle, boolean useClosestAngle, String logPrefix) {
         this.servo = servo;
         this.servoEncoder = encoder;
         this.homeAngle = homeAngle;
         this.useClosestAngle = useClosestAngle;
+        this.logPrefix = logPrefix;
         initialize();
     }
 
@@ -287,15 +290,19 @@ public class RTPAxon {
     @SuppressLint("DefaultLocale")
     public String log() {
         return String.format(
-                "Current Volts: %.3f\n" +
-                        "Current Angle: %.2f\n" +
-                        "Total Rotation: %.2f\n" +
-                        "Target Rotation: %.2f\n" +
-                        "Current Power: %.3f\n" +
-                        "PID Values: P=%.3f I=%.3f D=%.3f\n" +
-                        "PID Terms: Error=%.2f Integral=%.2f",
+                logPrefix + ": Current Volts: %.3f\n" +
+                logPrefix + ": Current Angle: %.2f\n" +
+                logPrefix + ": Home Angle: %.2f\n" +
+                logPrefix + ": Cliffs: %d\n" +
+                logPrefix + ": Total Rotation: %.2f\n" +
+                logPrefix + ": Target Rotation: %.2f\n" +
+                logPrefix + ": Current Power: %.3f\n" +
+                logPrefix + ": PID Values: P=%.3f I=%.3f D=%.3f\n" +
+                logPrefix + ": PID Terms: Error=%.2f Integral=%.2f",
                 servoEncoder.getVoltage(),
                 getCurrentAngle(),
+                homeAngle,
+                cliffs,
                 totalRotation,
                 targetRotation,
                 power,

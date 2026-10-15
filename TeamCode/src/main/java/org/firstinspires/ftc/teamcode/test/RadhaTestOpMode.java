@@ -71,6 +71,7 @@ public class RadhaTestOpMode extends OpMode {
     telemetry.addData("turret1Angle", turret1Angle);
 
     launcherTurret1.outputTelemetry(telemetry);
+    launcherTurret2.outputTelemetry(telemetry);
   }
 
   private static double stepAngle(double angle, double stick, double dt) {

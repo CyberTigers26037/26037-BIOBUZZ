@@ -25,7 +25,7 @@ public class LauncherTurret {
         CRServo servo = hardwareMap.get(CRServo.class, "turretServo" + deviceNumber);
         AnalogInput encoder = hardwareMap.get(AnalogInput.class, "turretEncoder" + deviceNumber);
 
-        turretServo = new RTPAxon(servo, encoder, 0, false);
+        turretServo = new RTPAxon(servo, encoder, 0, false, devNum);
         turretServo.setMaxPower(1.0);
         turretServo.setPidCoeffs(0.007, 0.00041, 0.0002);
         launcher = new ArtifactLauncher(hardwareMap,"flywheelMotor" + deviceNumber);
