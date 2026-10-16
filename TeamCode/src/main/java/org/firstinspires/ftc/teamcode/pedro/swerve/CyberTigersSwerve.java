@@ -12,14 +12,14 @@ public class CyberTigersSwerve extends Swerve {
     }
 
     public void applyDrive(DrivePowers powers) {
-        // ANP, 10/12/2026, Swerve reverses the strafe and turn internally
+        //ANP, 10/12/2026, Swerve reverses the strafe and turn internally
         // which makes Mecanum and Swerve inconsistent.
         DrivePowers newPowers = new DrivePowers(
                 powers.forward(),
                 -powers.strafe(),
                 -powers.turn()
+
         );
-        super.applyDrive(powers);
-        
+        super.applyDrive(newPowers);
     }
 }
