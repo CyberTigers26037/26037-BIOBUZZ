@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.tuning;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -8,80 +9,75 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.util.Timer;
-
+@Configurable
 @SuppressWarnings("unused")
 @TeleOp(group = "Tuning")
 public class LauncherTuningOpMode extends OpMode {
-    private enum TUNING_PARAMETER { P, I, D }
+    private enum MotorSelection {
+        FLYWHEEL1,
+        FLYWHEEL2
+    }
 
-    private Timer inputTimer;
-    private TelemetryManager telemetryM;
-    private int motorRpm = 3000;
     private static final int MIN_RPM =  100;
     private static final int MAX_RPM = 6000;
     private static final double MOTOR_TICKS_PER_REVOLUTION = 28;
     private static final double SECONDS_PER_MINUTE = 60;
 
+    public static double P = 10;
+    public static double I = 3;
+    public static double D = 0;
+    public static double F = 0;
+
+    private MotorSelection currentMotorSelection;
+    private TelemetryManager telemetryM;
+    private int motorRpm = 3000;
+
     private DcMotorEx motor;
-    private TUNING_PARAMETER tuningParameter = TUNING_PARAMETER.P;
 
     @Override
     public void init() {
-        inputTimer = new Timer(0.1, true);
-
-        motor = hardwareMap.get(DcMotorEx.class, "flywheelMotor");
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.setVelocityPIDFCoefficients(260, 16, 26, 0);
-
+        initMotor(MotorSelection.FLYWHEEL1);
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
     }
 
+    private void initMotor(MotorSelection motorSelection) {
+        motor = hardwareMap.get(DcMotorEx.class, motorSelection == MotorSelection.FLYWHEEL1 ? "flywheelMotor1" : "flywheelMotor2");
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PIDFCoefficients pidf = motor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        P = pidf.p;
+        I = pidf.i;
+        D = pidf.d;
+        F = pidf.f;
+        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        this.currentMotorSelection = motorSelection;
+    }
+
     @Override
     public void loop() {
-        if (gamepad1.dpadLeftWasPressed()) {
+        MotorSelection newMotorSelection = currentMotorSelection;
+        if (gamepad1.xWasPressed()) newMotorSelection = MotorSelection.FLYWHEEL1;
+        if (gamepad1.yWasPressed()) newMotorSelection = MotorSelection.FLYWHEEL2;
+        if (newMotorSelection != currentMotorSelection) {
+            initMotor(newMotorSelection);
+        }
+
+        if (gamepad1.dpadDownWasPressed()) {
             motorRpm -= 100;
         }
-        if (gamepad1.dpadRightWasPressed()) {
+        if (gamepad1.dpadUpWasPressed()) {
             motorRpm += 100;
         }
 
-        if (gamepad1.xWasPressed()) tuningParameter = TUNING_PARAMETER.P;
-        if (gamepad1.yWasPressed()) tuningParameter = TUNING_PARAMETER.I;
-        if (gamepad1.bWasPressed()) tuningParameter = TUNING_PARAMETER.D;
-
-        telemetry.addLine("DPAD Left/Right to adjust Target RPM");
+        telemetry.addLine("DPAD Up/Down to adjust Target RPM");
         telemetry.addLine("Right Trigger to run motor");
-        telemetry.addLine("X to tune P, Y to tune I, B to tune D");
+        telemetry.addLine("X to tune Motor 1, Y to tune Motor 2");
         telemetry.addLine();
-
-        double tuningAdjustment = 0;
-        if (gamepad1.dpad_up && inputTimer.isExpired()) {
-            tuningAdjustment = 1;
-            inputTimer.start();
-        }
-        else if (gamepad1.dpad_down && inputTimer.isExpired()) {
-            tuningAdjustment = -1;
-            inputTimer.start();
-        }
 
         PIDFCoefficients pidf = motor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (tuningAdjustment != 0) {
-            switch (tuningParameter) {
-                case P:
-                    pidf.p += tuningAdjustment;
-                    break;
-                case I:
-                    pidf.i += tuningAdjustment;
-                    break;
-                case D:
-                    pidf.d += tuningAdjustment;
-                    break;
-            }
-
+        if (updatePIDF(pidf)) {
             motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
         }
 
@@ -96,10 +92,6 @@ public class LauncherTuningOpMode extends OpMode {
         telemetry.addData("Actual RPM", tpsToRpm(motor.getVelocity()));
         telemetry.addLine();
 
-        telemetry.addData("Currently Tuning", tuningParameter);
-        telemetry.addLine("DPAD Up/Down to Adjust");
-        telemetry.addLine();
-
         telemetry.addData("P", pidf.p);
         telemetry.addData("I", pidf.i);
         telemetry.addData("D", pidf.d);
@@ -108,6 +100,18 @@ public class LauncherTuningOpMode extends OpMode {
         telemetryM.addData("Target RPM", motorRpm);
         telemetryM.addData("Actual RPM", tpsToRpm(motor.getVelocity()));
         telemetryM.update();
+    }
+
+    private boolean updatePIDF(PIDFCoefficients pidf) {
+        if ((pidf.p != P) || (pidf.i != I) || (pidf.d != D) || (pidf.f != F)) {
+            pidf.p = P;
+            pidf.i = I;
+            pidf.d = D;
+            pidf.f = F;
+            return true;
+        }
+
+        return  false;
     }
 
     private double rpmToTps(int rpm) {

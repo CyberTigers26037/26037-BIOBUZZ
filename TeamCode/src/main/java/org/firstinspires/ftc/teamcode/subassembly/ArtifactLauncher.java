@@ -29,7 +29,7 @@ public class ArtifactLauncher {
     public ArtifactLauncher(HardwareMap hwMap, String devicename) {
         flywheelMotor = hwMap.get(DcMotorEx.class, devicename);
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheelMotor.setVelocityPIDFCoefficients(260, 16, 26, 0);
+        flywheelMotor.setVelocityPIDFCoefficients(10, 3, 0, 0);
         flywheelMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
