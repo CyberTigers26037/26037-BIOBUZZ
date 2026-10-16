@@ -22,9 +22,9 @@ public class ArtifactLauncher {
     }
 
     public void adjustFlywheelRpm(int amount){
-        flywheelRpm += amount;
-        flywheelRpm = Range.clip(flywheelRpm, MIN_RPM, MAX_RPM);
+        flywheelRpm = Range.clip(amount, MIN_RPM, MAX_RPM);
     }
+
 
     public ArtifactLauncher(HardwareMap hwMap, String devicename) {
         flywheelMotor = hwMap.get(DcMotorEx.class, devicename);

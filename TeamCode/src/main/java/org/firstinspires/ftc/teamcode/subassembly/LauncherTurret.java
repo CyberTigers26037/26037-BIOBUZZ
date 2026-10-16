@@ -59,6 +59,12 @@ public class LauncherTurret {
 
         turretServo.setTargetRotation(angle * SERVO_DEG_PER_TURRET_DEG);
     }
+    public void setLauncherRpm (int rpm){
+        launcher.adjustFlywheelRpm(rpm);
+    }
+    public int getLauncherRpm(){
+        return launcher.getFlywheelRpm();
+    }
 
     public void toggleLauncher () {
         if (launcher.isRunning()) {
