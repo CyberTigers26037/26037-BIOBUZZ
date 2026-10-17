@@ -79,3 +79,8 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# .project and .settings
+**/.project
+**/.settings
+**/.classpath
