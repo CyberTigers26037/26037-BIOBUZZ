@@ -34,19 +34,19 @@ public class LauncherturretTestOpMode extends OpMode {
         if (Math.abs( gamepad1.left_stick_x) > 0.01) {
             turretAngle += gamepad1.left_stick_x * 90 * dt;
             turretAngle = Range.clip(turretAngle, 0, 359);
-        }
+//        }
 
-        if (gamepad1.dpadRightWasPressed()) {
-            turretAngle = 0;
-        }
-        if (gamepad1.dpadUpWasPressed()) {
-            turretAngle = 90;
-        }
-        if (gamepad1.dpadLeftWasPressed()) {
-            turretAngle = 180;
-        }
-        if (gamepad1.dpadDownWasPressed()) {
-            turretAngle = 270;
+//        if (gamepad1.dpadRightWasPressed()) {
+//            turretAngle = 0;
+//        }
+//        if (gamepad1.dpadUpWasPressed()) {
+//            turretAngle = 90;
+//        }
+//        if (gamepad1.dpadLeftWasPressed()) {
+//            turretAngle = 180;
+//        }
+//        if (gamepad1.dpadDownWasPressed()) {
+//            turretAngle = 270;
         }
         if (gamepad1.rightTriggerWasPressed()) {
             launcherTurret1.toggleLauncher();

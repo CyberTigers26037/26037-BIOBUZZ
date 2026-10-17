@@ -12,8 +12,8 @@ public class ArtifactLauncher {
     private final DcMotorEx flywheelMotor;
     private int flywheelRpm = 3000;
     public boolean isRunning;
-    private static final int MIN_RPM =  1000;
-    private static final int MAX_RPM = 6000;
+    private static final int MIN_RPM =  3000;
+    private static final int MAX_RPM = 4500;
     private static final double MOTOR_TICKS_PER_REVOLUTION = 28;
     private static final double SECONDS_PER_MINUTE = 60;
 
@@ -23,6 +23,7 @@ public class ArtifactLauncher {
 
     public void adjustFlywheelRpm(int amount){
         flywheelRpm = Range.clip(amount, MIN_RPM, MAX_RPM);
+        flywheelMotor.setVelocity(rpmToTps(flywheelRpm));
     }
 
 
