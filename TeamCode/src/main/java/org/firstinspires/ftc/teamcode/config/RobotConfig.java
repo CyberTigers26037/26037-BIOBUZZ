@@ -63,30 +63,31 @@ public class RobotConfig {
         xPodDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         foresightConfig = new ForesightConfig(
-            c -> {
-                Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
-                Controller secondaryTranslationalForward = Controller.proportional(0.0556214886138864);
-                Controller primaryTranslationalLateral = Controller.proportional(0.1972822375468673);
-                Controller secondaryTranslationalLateral = Controller.proportional(0.07289051529509401);
+                c -> {
+                    Controller primaryTranslationalForward = Controller.proportional(0.3512807474784043);
+                    Controller secondaryTranslationalForward = Controller.proportional(0.12978884979882607);
+                    Controller primaryTranslationalLateral = Controller.proportional(0.28005340841741366);
+                    Controller secondaryTranslationalLateral = Controller.proportional(0.10347225124534201);
 
-                c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
-                c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
+                    c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
+                    c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
 
-                c.coast.set(Controller.proportionalFeedforward(0.016223893876644743));
-                c.brake.set(Controller.proportionalFeedforward(0.013790309795148031));
+                    c.coast.set(Controller.proportionalFeedforward(0.018373975281209678));
+                    c.brake.set(Controller.proportionalFeedforward(0.015617878989028226));
 
-                c.headingFeedback.set(Controller.proportional(2.7109960647229423));
-                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.03923918500290919, 0.005238250122071822));
+                    c.headingFeedback.set(Controller.proportional(6.340526954006981));
+                    c.headingBrakeCoefficients.set(Vector2D.cartesian(-0.01972516061629269, 0.06135801526420156));
 
-                c.linearBrakeCoefficients.set(Matrix.diag(0.06691777859993613, 0.05651738468443017));
-                c.quadraticBrakeCoefficients.set(Matrix.diag(0.0010499120508739041, 0.001184877917208147));
+                    c.linearBrakeCoefficients.set(Matrix.diag(-0.017346803914940593, -0.01595119111181158));
+                    c.quadraticBrakeCoefficients.set(Matrix.diag(0.0018287854967594804, 0.003391574566543929));
 
-                c.maxAchievableForwardVelocity.set(63.005591468932366);
-                c.maxAchievableStrafeVelocity.set(53.046979792969296);
-                c.naturalForwardDeceleration.set(35.00835406004796);
-                c.naturalStrafeDeceleration.set(49.609008938604696);
-            }
+                    c.maxAchievableForwardVelocity.set(60.57971780717996);
+                    c.maxAchievableStrafeVelocity.set(63.480653189551234);
+                    c.naturalForwardDeceleration.set(83.1194661688527);
+                    c.naturalStrafeDeceleration.set(58.61634081124436);
+                }
         );
+
     }
 
     private static void initMillenniumStarterRobot() {
