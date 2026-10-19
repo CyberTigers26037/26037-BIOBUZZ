@@ -79,6 +79,7 @@ public class LauncherTurret {
         telemetry.addData("limitSwitch" + deviceNumber, limitSwitch.getState());
         telemetry.addData("isInitialized" + deviceNumber, isInitialized());
         telemetry.addData("turretRpm" + deviceNumber, launcher.getFlywheelRpm());
+        telemetry.addData("actualTurretRpm" + deviceNumber, launcher.getActualFlywheelRpm());
         telemetry.addLine(turretServo.log());
     }
 }
