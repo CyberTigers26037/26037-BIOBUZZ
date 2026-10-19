@@ -18,7 +18,7 @@ public class HiveFinderTestOpMode1 extends OpMode {
     private static final double HIVE_OFFSET_X = 12.75;
     private static final double HIVE_OFFSET_Y = 19.75;
     private static final Pose hiveBlueAudience = PoseFactory.degrees().of(FIELD_CENTER + HIVE_OFFSET_X, FIELD_CENTER - HIVE_OFFSET_Y, 0);
-    private static final Pose hiveBlueScoring = PoseFactory.degrees().of(FIELD_CENTER + HIVE_OFFSET_X, FIELD_CENTER + HIVE_OFFSET_Y, 0);;
+    private static final Pose hiveBlueScoring = PoseFactory.degrees().of(FIELD_CENTER + HIVE_OFFSET_X, FIELD_CENTER + HIVE_OFFSET_Y, 0);
     private static final Pose hiveRedScoring = PoseFactory.degrees().of(FIELD_CENTER - HIVE_OFFSET_X, FIELD_CENTER + HIVE_OFFSET_Y, 0);
     private static final Pose hiveRedAudience = PoseFactory.degrees().of(FIELD_CENTER - HIVE_OFFSET_X, FIELD_CENTER - HIVE_OFFSET_Y, 0);
 
@@ -37,10 +37,10 @@ public class HiveFinderTestOpMode1 extends OpMode {
     @Override
     public void loop() {
 
-        if (gamepad1.aWasPressed()) {
+        if (gamepad1.bWasPressed()) {
             isBlueAlliance = false;
         }
-        else if (gamepad1.bWasPressed()){
+        else if (gamepad1.xWasPressed()){
             isBlueAlliance = true;
         }
 
@@ -64,18 +64,34 @@ public class HiveFinderTestOpMode1 extends OpMode {
         double hiveRedAudienceDistance = calculateDistanceToTarget(robotPose, hiveRedAudience);
         double hiveRedScoringDistance = calculateDistanceToTarget(robotPose, hiveRedScoring);
 
-        Pose target;
-        if (hiveBlueScoringDistance < hiveBlueAudienceDistance) {
-            target = hiveBlueScoring;
+        if (isBlueAlliance) {
+            Pose target;
+            if (hiveBlueScoringDistance < hiveBlueAudienceDistance) {
+                target = hiveBlueScoring;
+            } else {
+                target = hiveBlueAudience;
+            }
+            double angleToTarget = calculateAngleToTarget(robotPose, target);
+            telemetry.addData("Target Heading Blue", angleToTarget);
+            servo.setTargetAngle(angleToTarget);
         }
         else {
-            target = hiveBlueAudience;
+            Pose targetB;
+            if (hiveRedScoringDistance < hiveRedAudienceDistance) {
+                targetB = hiveRedScoring;
+            } else {
+                targetB = hiveRedAudience;
+            }
+            double angleToTargetB = calculateAngleToTarget(robotPose, targetB);
+            telemetry.addData("Target Heading Red", angleToTargetB);
+            servo.setTargetAngle(angleToTargetB);
+        }
         }
 
-        double angleToTarget = calculateAngleToTarget(robotPose, target);
-        telemetry.addData("Target Heading", angleToTarget);
-        servo.setTargetAngle(angleToTarget);
-    }
+
+
+
+
     private double calculateAngleToTarget(Pose robotPose, Pose targetPose) {
         double deltaX = targetPose.x() - robotPose.x();
         double deltaY = targetPose.y() - robotPose.y();
