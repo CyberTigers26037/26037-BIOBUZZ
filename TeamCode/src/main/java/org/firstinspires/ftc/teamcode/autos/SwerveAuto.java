@@ -23,18 +23,17 @@ public class SwerveAuto extends OpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     // Poses
-    private final Pose startPose = poseFactory.of(132, 9, 90);
-    private final Pose scorePose = poseFactory.of(132, 48, 90);
-    private final Pose medianPose = poseFactory.of(132, 96, 90);
-    private final Pose parkPose = poseFactory.of(96, 120, 180);
+    private final Pose startPose = poseFactory.of(82, 131, -90);
+
+    private final Pose parkPose = poseFactory.of(131, 41, 180);
 
     // Path methods
-    private Path startToScore() {
-        return line(startPose, scorePose).linear(startPose, scorePose);
+    private Path startToDrive() {
+        return curve(startPose);
     }
 
     private Path park(){
-        return curve(scorePose, medianPose, parkPose).linear(scorePose, parkPose);
+        return curve(parkPose);
     }
 
     private final Pose startPose2 = poseFactory.of(96, 120, 180);
@@ -57,7 +56,7 @@ public class SwerveAuto extends OpMode {
 
     private Command autoRoutine() {
         return sequential(
-                follow(follower, startToScore()),
+                follow(follower, startToDrive()),
                 // Add mechanism commands here.
                 follow(follower, park()),
                 follow(follower, startToScore2()),
