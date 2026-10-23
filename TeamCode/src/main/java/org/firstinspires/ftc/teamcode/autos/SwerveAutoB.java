@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
@@ -23,8 +22,8 @@ public class SwerveAutoB extends OpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     // Poses
-    private final Pose startPose = poseFactory.of(125, 9, 90);
-    private final Pose parkPose = poseFactory.of(132, 135, 90);
+    private final Pose startPose = poseFactory.of(120, 9, 90);
+    private final Pose parkPose = poseFactory.of(130, 22, 90);
 
     // Path methods
     private Path startToPark() {
