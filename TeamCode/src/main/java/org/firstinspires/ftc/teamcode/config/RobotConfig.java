@@ -5,13 +5,15 @@ import com.pedropathing.controllers.Controller;
 import com.pedropathing.math.Matrix;
 import com.pedropathing.math.Vector2D;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Device;
 
 public class RobotConfig {
     private static boolean initialized;
-    private static final String ROBOT_SERIAL_COACH_ANTHONY          = "b59fde0caa12667d";
-    private static final String ROBOT_SERIAL_MILLENNIUM_STARTER_BOT = "a542e45d0aef5058";
-    private static final String ROBOT_SERIAL_MILLENNIUM_SWERVE      = "32d62e829b0befa2";
+    private static final String ROBOT_SERIAL_COACH_ANTHONY_PROGRAMMING_CHASSIS  = "b59fde0caa12667d";
+    private static final String ROBOT_SERIAL_COACH_ANTHONY_BIOBUZZ_REPLICA      = "5838f408422f581c";
+    private static final String ROBOT_SERIAL_MILLENNIUM_STARTER_BOT             = "a542e45d0aef5058";
+    private static final String ROBOT_SERIAL_MILLENNIUM_SWERVE                  = "32d62e829b0befa2";
 
     private static String robotName = "Unknown";
 
@@ -19,6 +21,10 @@ public class RobotConfig {
     private static boolean isMecanumChassis;
     private static double xPodOffset;
     private static double yPodOffset;
+    private static DcMotorSimple.Direction mecanumFrontLeftMotorDirection;
+    private static DcMotorSimple.Direction mecanumBackLeftMotorDirection;
+    private static DcMotorSimple.Direction mecanumBackRightMotorDirection;
+    private static DcMotorSimple.Direction mecanumFrontRightMotorDirection;
     private static GoBildaPinpointDriver.EncoderDirection xPodDirection;
     private static GoBildaPinpointDriver.EncoderDirection yPodDirection;
     private static ForesightConfig foresightConfig;
@@ -36,8 +42,11 @@ public class RobotConfig {
         String robotSerialNumber = Device.getSerialNumberOrUnknown();
 
         switch (robotSerialNumber) {
-            case ROBOT_SERIAL_COACH_ANTHONY:
-                initCoachAnthonyRobot();
+            case ROBOT_SERIAL_COACH_ANTHONY_PROGRAMMING_CHASSIS:
+                initCoachAnthonyProgrammingChassisRobot();
+                break;
+            case ROBOT_SERIAL_COACH_ANTHONY_BIOBUZZ_REPLICA:
+                initCoachAnthonyBiobuzzReplicaRobot();
                 break;
             case ROBOT_SERIAL_MILLENNIUM_STARTER_BOT:
                 initMillenniumStarterRobot();
@@ -99,6 +108,12 @@ public class RobotConfig {
         yPodOffset = -168.0;
         xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+
+        mecanumFrontLeftMotorDirection = DcMotorSimple.Direction.REVERSE;
+        mecanumBackLeftMotorDirection = DcMotorSimple.Direction.REVERSE;
+        mecanumBackRightMotorDirection = DcMotorSimple.Direction.FORWARD;
+        mecanumFrontRightMotorDirection = DcMotorSimple.Direction.FORWARD;
+
         foresightConfig = new ForesightConfig(
             c -> {
                 Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
@@ -126,8 +141,8 @@ public class RobotConfig {
         );
     }
 
-    private static void initCoachAnthonyRobot() {
-        robotName = "Coach Anthony";
+    private static void initCoachAnthonyProgrammingChassisRobot() {
+        robotName = "Coach Anthony Prog Chassis";
 
         isMecanumChassis = true;
         isSwerveChassis = false;
@@ -135,6 +150,11 @@ public class RobotConfig {
         yPodOffset = -168.0;
         xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        mecanumFrontLeftMotorDirection = DcMotorSimple.Direction.REVERSE;
+        mecanumBackLeftMotorDirection = DcMotorSimple.Direction.REVERSE;
+        mecanumBackRightMotorDirection = DcMotorSimple.Direction.FORWARD;
+        mecanumFrontRightMotorDirection = DcMotorSimple.Direction.FORWARD;
+
         foresightConfig = new ForesightConfig(
             c -> {
                 Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
@@ -159,6 +179,48 @@ public class RobotConfig {
                 c.naturalForwardDeceleration.set(35.00835406004796);
                 c.naturalStrafeDeceleration.set(49.609008938604696);
             }
+        );
+    }
+
+    private static void initCoachAnthonyBiobuzzReplicaRobot() {
+        robotName = "Coach Anthony BIOBUZZ Replica";
+
+        isMecanumChassis = true;
+        isSwerveChassis = false;
+        xPodOffset = -130.0;
+        yPodOffset = -190.0;
+        xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        yPodDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+
+        mecanumFrontLeftMotorDirection = DcMotorSimple.Direction.FORWARD;
+        mecanumBackLeftMotorDirection = DcMotorSimple.Direction.FORWARD;
+        mecanumBackRightMotorDirection = DcMotorSimple.Direction.REVERSE;
+        mecanumFrontRightMotorDirection = DcMotorSimple.Direction.REVERSE;
+
+        foresightConfig = new ForesightConfig(
+                c -> {
+                    Controller primaryTranslationalForward = Controller.proportional(0.15054265544715764);
+                    Controller secondaryTranslationalForward = Controller.proportional(0.0556214886138864);
+                    Controller primaryTranslationalLateral = Controller.proportional(0.1972822375468673);
+                    Controller secondaryTranslationalLateral = Controller.proportional(0.07289051529509401);
+
+                    c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
+                    c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
+
+                    c.coast.set(Controller.proportionalFeedforward(0.016223893876644743));
+                    c.brake.set(Controller.proportionalFeedforward(0.013790309795148031));
+
+                    c.headingFeedback.set(Controller.proportional(2.7109960647229423));
+                    c.headingBrakeCoefficients.set(Vector2D.cartesian(0.03923918500290919, 0.005238250122071822));
+
+                    c.linearBrakeCoefficients.set(Matrix.diag(0.06691777859993613, 0.05651738468443017));
+                    c.quadraticBrakeCoefficients.set(Matrix.diag(0.0010499120508739041, 0.001184877917208147));
+
+                    c.maxAchievableForwardVelocity.set(63.005591468932366);
+                    c.maxAchievableStrafeVelocity.set(53.046979792969296);
+                    c.naturalForwardDeceleration.set(35.00835406004796);
+                    c.naturalStrafeDeceleration.set(49.609008938604696);
+                }
         );
     }
 
@@ -202,5 +264,27 @@ public class RobotConfig {
         init();
 
         return yPodDirection;
+    }
+
+    public static DcMotorSimple.Direction getMecanumFrontLeftMotorDirection() {
+        init();
+
+        return mecanumFrontLeftMotorDirection;
+    }
+
+    public static DcMotorSimple.Direction getMecanumBackLeftMotorDirection() {
+        init();
+
+        return mecanumBackLeftMotorDirection;
+    }
+    public static DcMotorSimple.Direction getMecanumBackRightMotorDirection() {
+        init();
+
+        return mecanumBackRightMotorDirection;
+    }
+    public static DcMotorSimple.Direction getMecanumFrontRightMotorDirection() {
+        init();
+
+        return mecanumFrontRightMotorDirection;
     }
 }
