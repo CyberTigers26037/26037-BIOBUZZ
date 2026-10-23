@@ -18,50 +18,28 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous
-public class SwerveAuto extends OpMode {
+public class SwerveAutoA extends OpMode {
     private Follower follower;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     // Poses
-    private final Pose startPose = poseFactory.of(82, 131, -90);
-
+    private final Pose startPose = poseFactory.of(82, 131, 90);
+    private final Pose startLaunchPose = poseFactory.of(82, 121, 180);
     private final Pose parkPose = poseFactory.of(131, 41, 180);
 
     // Path methods
     private Path startToDrive() {
-        return curve(startPose);
+        return curve(startPose, startLaunchPose);
     }
-
     private Path park(){
         return curve(parkPose);
     }
 
-    private final Pose startPose2 = poseFactory.of(96, 120, 180);
-    //    private final Pose rotatePose2 = poseFactory.of(96, 121, 0);
-    private final Pose medianPose2 = poseFactory.of( 132, 96, 90);
-    private final Pose scorePose2 = poseFactory.of(132, 48, 90);
-    private final Pose parkPose2 = poseFactory.of(132, 9, 90);
-
-    private Path startToScore2() {
-        return curve(startPose2, medianPose2, scorePose2).linear(startPose2, scorePose2);
-    }
-//      private Path rotatePose2() {
-//          return line(startPose2, rotatePose2).linear(startPose2, rotatePose2);
-//      }
-
-    private Path park2() {
-        return line(scorePose2, parkPose2).linear(scorePose2, parkPose2);
-    }
-//
-
     private Command autoRoutine() {
         return sequential(
                 follow(follower, startToDrive()),
-                // Add mechanism commands here.
-                follow(follower, park()),
-                follow(follower, startToScore2()),
-//                follow(follower, rotatePose2()),
-                follow(follower, park2())
+
+                follow(follower, park())
         );
     }
 
