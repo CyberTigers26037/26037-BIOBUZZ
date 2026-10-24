@@ -46,4 +46,26 @@ public class TransferSystem {
         return isRunningNectar;
     }
 
+    public void togglePollenTransfer () {
+        if (isRunningPollen()) {
+            stopPollenTransfer();
+        } else {
+            startPollenTransfer();
+        }
+    }
+    public void toggleNectarTransfer () {
+        if (isRunningNectar()) {
+            stopNectarTransfer();
+        } else {
+            startNectarTransfer();
+        }
+    }
+    public void toggleAllTransfer () {
+        if (isRunningPollen() || isRunningNectar()) {
+            stopAllTransfer();
+        } else {
+            startAllTransfer();
+        }
+    }
+
 }
