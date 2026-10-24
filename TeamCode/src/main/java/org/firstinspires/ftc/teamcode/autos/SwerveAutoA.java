@@ -16,15 +16,17 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.subassembly.Intake;
 
 @Autonomous
 public class SwerveAutoA extends OpMode {
     private Follower follower;
+    private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     // Poses
-    private final Pose startPose = poseFactory.of(82, 131, 90);
-    private final Pose startLaunchPose = poseFactory.of(82, 121, 180);
+    private final Pose startPose = poseFactory.of(82, 131, 270);
+    private final Pose startLaunchPose = poseFactory.of(82, 121, 270);
     private final Pose parkPose = poseFactory.of(131, 41, 180);
 
     // Path methods
@@ -38,8 +40,9 @@ public class SwerveAutoA extends OpMode {
     private Command autoRoutine() {
         return sequential(
                 follow(follower, startToDrive()),
-
-                follow(follower, park())
+                intake.getStartIntakeCommand(),
+                follow(follower, park()),
+                intake.getStopIntakeCommand()
         );
     }
 
@@ -50,6 +53,8 @@ public class SwerveAutoA extends OpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(startPose);
         follower.update();
+
+        intake = new Intake(hardwareMap);
     }
 
     @Override
