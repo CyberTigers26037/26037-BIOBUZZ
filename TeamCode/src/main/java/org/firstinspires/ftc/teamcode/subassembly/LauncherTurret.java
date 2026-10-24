@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.subassembly;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.servos.RTPAxon;
@@ -11,6 +14,7 @@ import org.firstinspires.ftc.teamcode.servos.RTPAxon;
 public class LauncherTurret {
     // Device Config Constants
     private static final double SERVO_DEG_PER_TURRET_DEG = 2.75;
+    private boolean isError = false;
 
     private DigitalChannel limitSwitch;
     private boolean initialized;
@@ -29,9 +33,15 @@ public class LauncherTurret {
         turretServo.setMaxPower(1.0);
         turretServo.setPidCoeffs(0.007, 0.00041, 0.0002);
         launcher = new ArtifactLauncher(hardwareMap,"flywheelMotor" + deviceNumber);
+        init();
+    }
+    public void init(){
+        if (limitSwitch.getState()){
+            isError = true;}
     }
 
     public void loop() {
+        if (isError){ return;} //refused to oporate if an error
         if (!initialized) {
             turretServo.setPower(-0.1);
             turretServo.trackAngle();
@@ -75,7 +85,12 @@ public class LauncherTurret {
 //        launcher.setFlywheelRpm(3000);
     }
 
+
     public void outputTelemetry(Telemetry telemetry) {
+        if (isError){
+            telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
+            telemetry.addData("WARNING", "<font color ='red'>OH NO SOMETHING BAD</font>");
+        }
         telemetry.addData("limitSwitch" + deviceNumber, limitSwitch.getState());
         telemetry.addData("isInitialized" + deviceNumber, isInitialized());
         telemetry.addData("turretRpm" + deviceNumber, launcher.getFlywheelRpm());
