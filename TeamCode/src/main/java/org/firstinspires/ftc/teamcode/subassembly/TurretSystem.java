@@ -23,7 +23,7 @@ public class TurretSystem {
         loopTimer.reset();
         if (Math.abs(joystickAmount) > 0.01) {
             turretAngle += joystickAmount * 90 * dt;
-            turretAngle = Range.clip(turretAngle, 0, 180);
+            turretAngle = Range.clip(turretAngle, -82, 183);
         }
         launcherTurret1.setTurretAngle(turretAngle);
         launcherTurret2.setTurretAngle(turretAngle);

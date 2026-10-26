@@ -36,8 +36,9 @@ public class LauncherTurret {
         init();
     }
     public void init(){
-        if (limitSwitch.getState()){
-            isError = true;}
+        if (limitSwitch.getState()) {
+            isError = true;
+        }
     }
 
     public void loop() {

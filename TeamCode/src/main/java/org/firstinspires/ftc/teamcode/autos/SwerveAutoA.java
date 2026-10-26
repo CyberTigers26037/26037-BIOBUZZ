@@ -15,6 +15,7 @@ import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
 
@@ -74,5 +75,11 @@ public class SwerveAutoA extends OpMode {
         telemetry.addData("Follower Mode", follower.mode());
         telemetry.update();
 
+    }
+
+
+    @Override
+    public void stop() {
+        OpModeStorage.autonomousEndPose = follower.pose(); //saves your position in that file
     }
 }

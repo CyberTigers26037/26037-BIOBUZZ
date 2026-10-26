@@ -135,4 +135,10 @@ public class CompetitionTeleOp extends OpMode {
 
     }
 
+    @Override
+    public void start(){
+        follower.setPose(OpModeStorage.autonomousEndPose);
+        follower.update();
+    }
+
 }
