@@ -17,6 +17,7 @@ public class TurretSystem {
         launcherTurret1 = new LauncherTurret(hardwareMap, "1");
         launcherTurret2 = new LauncherTurret(hardwareMap, "2");
     }
+
     public void loop (double joystickAmount) {
         double dt = loopTimer.seconds();
         loopTimer.reset();
@@ -47,5 +48,10 @@ public class TurretSystem {
         telemetry.addData("turretangle", turretAngle);
         launcherTurret1.outputTelemetry(telemetry);
         launcherTurret2.outputTelemetry(telemetry);
+    }
+
+    public void setAngle(double angle) {
+        turretAngle = Range.clip(angle, 0, 180);
+
     }
 }

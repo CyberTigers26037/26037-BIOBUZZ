@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,9 +23,17 @@ public class CompetitionTeleOp extends OpMode {
 
     private TransferSystem transferSystem;
 
+    private boolean autoTracking;
+
+    private final PoseFactory poseFactory = PoseFactory.degrees();
+
+    private final Pose start = poseFactory.of(120, 9, 90);
+
+
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
+        follower.setPose(start);
         turretSystem = new TurretSystem(hardwareMap);
         intake = new Intake(hardwareMap);
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
@@ -90,9 +100,9 @@ public class CompetitionTeleOp extends OpMode {
         }
 
         if (gamepad2.dpadLeftWasPressed()) {
-            //auto target and auto rpm
+            autoTracking = !autoTracking;
         }
-        turretSystem.loop(gamepad2.right_stick_x);
+
     }
 
     private void processDriver(){
@@ -110,13 +120,16 @@ public class CompetitionTeleOp extends OpMode {
         follower.update();
         telemetry.addData("leftjoy", gamepad1.left_stick_x);
 
-        double angleToTarget = hiveTargeting.getAngleToTarget();
-        //turretSystem.setAngle(angleToTarget);
+        if (autoTracking) {
+            double angleToTarget = hiveTargeting.getAngleToTarget();
+            turretSystem.setAngle(angleToTarget);
+        }
 
         processGunner();
         processDriver();
 
-        turretSystem.loop(gamepad1.left_stick_x);
+        telemetry.addData("Auto Tracking",autoTracking);
+        turretSystem.loop(gamepad2.right_stick_x);
         turretSystem.outputTelemetry(telemetry);
         hiveTargeting.outputTelemetry(telemetry);
 

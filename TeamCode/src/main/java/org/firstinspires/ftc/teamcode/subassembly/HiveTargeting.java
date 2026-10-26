@@ -58,6 +58,7 @@ public class HiveTargeting {
             telemetry.addData("Robot Y", follower.pose().y());
             telemetry.addData("Robot Heading", Math.toDegrees(follower.pose().heading()));
             telemetry.addData("Target Heading Blue", lastAngleToTarget);
+
         }
         private double calculateAngleToTarget(Pose robotPose, Pose targetPose) {
             double deltaX = targetPose.x() - robotPose.x();
