@@ -33,7 +33,7 @@ public class CompetitionTeleOp extends OpMode {
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
-        follower.setPose(start);
+        follower.setPose(OpModeStorage.autonomousEndPose != null ? OpModeStorage.autonomousEndPose: start);
         turretSystem = new TurretSystem(hardwareMap);
         intake = new Intake(hardwareMap);
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
@@ -135,10 +135,5 @@ public class CompetitionTeleOp extends OpMode {
 
     }
 
-    @Override
-    public void start(){
-        follower.setPose(OpModeStorage.autonomousEndPose);
-        follower.update();
-    }
 
 }
