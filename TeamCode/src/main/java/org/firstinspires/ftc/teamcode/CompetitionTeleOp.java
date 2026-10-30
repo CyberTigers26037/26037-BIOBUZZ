@@ -33,10 +33,11 @@ public class CompetitionTeleOp extends OpMode {
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
-        follower.setPose(start);
+        follower.setPose(OpModeStorage.autonomousEndPose != null ? OpModeStorage.autonomousEndPose: start);
         turretSystem = new TurretSystem(hardwareMap);
         intake = new Intake(hardwareMap);
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
+        transferSystem = new TransferSystem(hardwareMap);
     }
 
     private void processGunner(){
@@ -49,7 +50,12 @@ public class CompetitionTeleOp extends OpMode {
         }
 
         if (gamepad2.leftTriggerWasPressed()) {
-            transferSystem.startPollenTransfer();
+            if (gamepad2.back) {
+                transferSystem.startPollenTransferBackwards();
+            } else{
+                transferSystem.startPollenTransfer();
+            }
+
         }
         else if (gamepad2.leftTriggerWasReleased()){
             transferSystem.stopPollenTransfer();
@@ -135,10 +141,5 @@ public class CompetitionTeleOp extends OpMode {
 
     }
 
-    @Override
-    public void start(){
-        follower.setPose(OpModeStorage.autonomousEndPose);
-        follower.update();
-    }
 
 }

@@ -10,7 +10,7 @@ public class TurretSystem {
     private LauncherTurret launcherTurret1;
     private LauncherTurret launcherTurret2;
     private final ElapsedTime loopTimer = new ElapsedTime();
-    private double turretAngle = 0;
+    private double turretAngle = 90;
 
 
     public TurretSystem (HardwareMap hardwareMap) {
@@ -23,7 +23,7 @@ public class TurretSystem {
         loopTimer.reset();
         if (Math.abs(joystickAmount) > 0.01) {
             turretAngle += joystickAmount * 90 * dt;
-            turretAngle = Range.clip(turretAngle, -82, 183);
+            turretAngle = Range.clip(turretAngle, 0, 180);
         }
         launcherTurret1.setTurretAngle(turretAngle);
         launcherTurret2.setTurretAngle(turretAngle);
