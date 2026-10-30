@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 
 @SuppressWarnings("unused")
-@TeleOp
+@TeleOp(group = "Test")
 public class LauncherturretTestOpMode extends OpMode {
     private TurretSystem turretSystem;
 

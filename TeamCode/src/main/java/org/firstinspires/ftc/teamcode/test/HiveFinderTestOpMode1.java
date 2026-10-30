@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.servos.AxonServo;
 import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 
 @SuppressWarnings("unused")
-@TeleOp
+@TeleOp(group = "Test")
 public class HiveFinderTestOpMode1 extends OpMode {
     private static final Pose startPose = PoseFactory.degrees() .of(120, 9, 90);
 

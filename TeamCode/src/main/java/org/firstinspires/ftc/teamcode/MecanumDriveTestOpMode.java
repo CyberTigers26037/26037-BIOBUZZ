@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subassembly.MecanumDrive;
 
 @SuppressWarnings("unused")
-@TeleOp(name ="MecanumDriveTestOpMode")
+@TeleOp(name ="MecanumDriveTestOpMode", group = "Test")
 public class MecanumDriveTestOpMode extends LinearOpMode {
     @Override
     public void runOpMode(){
