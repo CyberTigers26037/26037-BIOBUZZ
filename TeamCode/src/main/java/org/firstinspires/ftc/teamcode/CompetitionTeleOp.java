@@ -37,6 +37,7 @@ public class CompetitionTeleOp extends OpMode {
         turretSystem = new TurretSystem(hardwareMap);
         intake = new Intake(hardwareMap);
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
+        transferSystem = new TransferSystem(hardwareMap);
     }
 
     private void processGunner(){
@@ -49,7 +50,12 @@ public class CompetitionTeleOp extends OpMode {
         }
 
         if (gamepad2.leftTriggerWasPressed()) {
-            transferSystem.startPollenTransfer();
+            if (gamepad2.back) {
+                transferSystem.startPollenTransferBackwards();
+            } else{
+                transferSystem.startPollenTransfer();
+            }
+
         }
         else if (gamepad2.leftTriggerWasReleased()){
             transferSystem.stopPollenTransfer();
