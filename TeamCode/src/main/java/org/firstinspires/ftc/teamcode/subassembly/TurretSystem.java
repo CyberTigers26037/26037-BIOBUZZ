@@ -39,6 +39,9 @@ public class TurretSystem {
     }
 
 
+    public int getRpm(){
+        return launcherTurretPollen.getLauncherRpm();
+    }
 
     public void toggleLauncher() {
         if(nectarLauncherEnabled) {
@@ -48,7 +51,7 @@ public class TurretSystem {
     }
 
     public void adjustLauncherRpm(int amount) {
-        int currpm = launcherTurretNectar.getLauncherRpm();
+        int currpm = launcherTurretPollen.getLauncherRpm();
         if(nectarLauncherEnabled) {
             launcherTurretNectar.setLauncherRpm(currpm + amount);
         }
@@ -69,7 +72,12 @@ public class TurretSystem {
     }
 
     public void adjustRpmForDistance(double distanceToTarget) {
-        int newRpm = 3000;
+        int newRpm = 3500;
+        if (distanceToTarget > 60) {
+            newRpm = 3800;
+        } else if(distanceToTarget > 50) {
+            newRpm = 3500;
+        }
         if(nectarLauncherEnabled) {
             launcherTurretNectar.setLauncherRpm(newRpm);
         }

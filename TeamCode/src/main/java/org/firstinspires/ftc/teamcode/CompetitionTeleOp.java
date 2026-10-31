@@ -65,7 +65,7 @@ public class CompetitionTeleOp extends OpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(120, 9, 90);
+    private final Pose start = poseFactory.of(135,135, 270);
 
 
     @Override
@@ -88,10 +88,14 @@ public class CompetitionTeleOp extends OpMode {
         }
 
         if (gamepad2.leftTriggerWasPressed()) {
+
             if (gamepad2.back) {
                 transferSystem.startPollenTransferBackwards();
             } else{
-                transferSystem.startPollenTransfer();
+                if (turretSystem.getRpm() > 0) {
+                    transferSystem.startPollenTransfer();
+
+                }
             }
 
         }

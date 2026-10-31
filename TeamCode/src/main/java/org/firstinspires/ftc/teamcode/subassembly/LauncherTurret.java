@@ -71,7 +71,7 @@ public class LauncherTurret {
         launcher.adjustFlywheelRpm(rpm);
     }
     public int getLauncherRpm(){
-        return launcher.getFlywheelRpm();
+        return launcher.getActualFlywheelRpm();
     }
 
     public void toggleLauncher () {
