@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.subassembly;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.servos.RTPAxon;
@@ -20,19 +17,19 @@ public class LauncherTurret {
     private boolean initialized;
     private RTPAxon turretServo;
     private ArtifactLauncher launcher;
-    private String deviceNumber;
+    private String deviceName;
 
-    public LauncherTurret(HardwareMap hardwareMap, String devNum) {
-        deviceNumber = devNum;
-        limitSwitch = hardwareMap.get(DigitalChannel.class, "turretSwitch" + deviceNumber);
+    public LauncherTurret(HardwareMap hardwareMap, String devName) {
+        deviceName = devName;
+        limitSwitch = hardwareMap.get(DigitalChannel.class, "turretSwitch" + deviceName);
         limitSwitch.setMode(DigitalChannel.Mode.INPUT);
-        CRServo servo = hardwareMap.get(CRServo.class, "turretServo" + deviceNumber);
-        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "turretEncoder" + deviceNumber);
+        CRServo servo = hardwareMap.get(CRServo.class, "turretServo" + deviceName);
+        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "turretEncoder" + deviceName);
 
-        turretServo = new RTPAxon(servo, encoder, 0, false, devNum);
+        turretServo = new RTPAxon(servo, encoder, 0, false, devName);
         turretServo.setMaxPower(1.0);
         turretServo.setPidCoeffs(0.007, 0.00041, 0.0002);
-        launcher = new ArtifactLauncher(hardwareMap,"flywheelMotor" + deviceNumber);
+        launcher = new ArtifactLauncher(hardwareMap,"flywheelMotor" + deviceName);
         init();
     }
     public void init(){
@@ -90,12 +87,12 @@ public class LauncherTurret {
     public void outputTelemetry(Telemetry telemetry) {
         if (isError){
             telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
-            telemetry.addData("WARNING", "<font color ='red'>OH NO SOMETHING BAD</font>");
+            telemetry.addData("WARNING TURRET " + deviceName, "<h1><font color ='red'>TURRET LIMIT SWITCH PRESSED</font></h1>");
         }
-        telemetry.addData("limitSwitch" + deviceNumber, limitSwitch.getState());
-        telemetry.addData("isInitialized" + deviceNumber, isInitialized());
-        telemetry.addData("turretRpm" + deviceNumber, launcher.getFlywheelRpm());
-        telemetry.addData("actualTurretRpm" + deviceNumber, launcher.getActualFlywheelRpm());
+        telemetry.addData("limitSwitch" + deviceName, limitSwitch.getState());
+        telemetry.addData("isInitialized" + deviceName, isInitialized());
+        telemetry.addData("turretRpm" + deviceName, launcher.getFlywheelRpm());
+        telemetry.addData("actualTurretRpm" + deviceName, launcher.getActualFlywheelRpm());
         telemetry.addLine(turretServo.log());
     }
 }

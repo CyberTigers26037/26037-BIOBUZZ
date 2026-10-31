@@ -7,15 +7,19 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TurretSystem {
-    private LauncherTurret launcherTurret1;
-    private LauncherTurret launcherTurret2;
+    private LauncherTurret launcherTurretNectar;
+    private LauncherTurret launcherTurretPollen;
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double turretAngle = 90;
 
+    private final boolean nectarLauncherEnabled = false;
 
     public TurretSystem (HardwareMap hardwareMap) {
-        launcherTurret1 = new LauncherTurret(hardwareMap, "1");
-        launcherTurret2 = new LauncherTurret(hardwareMap, "2");
+        if(nectarLauncherEnabled) {
+            launcherTurretNectar = new LauncherTurret(hardwareMap, "Nectar");
+        }
+        launcherTurretPollen = new LauncherTurret(hardwareMap, "Pollen");
+
     }
 
     public void loop (double joystickAmount) {
@@ -25,33 +29,50 @@ public class TurretSystem {
             turretAngle += joystickAmount * 90 * dt;
             turretAngle = Range.clip(turretAngle, 0, 180);
         }
-        launcherTurret1.setTurretAngle(turretAngle);
-        launcherTurret2.setTurretAngle(turretAngle);
-        launcherTurret1.loop();
-        launcherTurret2.loop();
+
+        if(nectarLauncherEnabled) {
+            launcherTurretNectar.setTurretAngle(turretAngle);
+            launcherTurretNectar.loop();
+        }
+        launcherTurretPollen.setTurretAngle(turretAngle);
+        launcherTurretPollen.loop();
     }
 
 
 
     public void toggleLauncher() {
-        launcherTurret1.toggleLauncher();
-        launcherTurret2.toggleLauncher();
+        if(nectarLauncherEnabled) {
+            launcherTurretNectar.toggleLauncher();
+        }
+        launcherTurretPollen.toggleLauncher();
     }
 
     public void adjustLauncherRpm(int amount) {
-        int currpm = launcherTurret1.getLauncherRpm();
-        launcherTurret1.setLauncherRpm(currpm + amount);
-        launcherTurret2.setLauncherRpm(currpm + amount);
+        int currpm = launcherTurretNectar.getLauncherRpm();
+        if(nectarLauncherEnabled) {
+            launcherTurretNectar.setLauncherRpm(currpm + amount);
+        }
+        launcherTurretPollen.setLauncherRpm(currpm + amount);
     }
 
     public void outputTelemetry(Telemetry telemetry) {
         telemetry.addData("turretangle", turretAngle);
-        launcherTurret1.outputTelemetry(telemetry);
-        launcherTurret2.outputTelemetry(telemetry);
+        if(nectarLauncherEnabled) {
+            launcherTurretNectar.outputTelemetry(telemetry);
+        }
+        launcherTurretPollen.outputTelemetry(telemetry);
     }
 
     public void setAngle(double angle) {
         turretAngle = Range.clip(angle, 0, 180);
 
+    }
+
+    public void adjustRpmForDistance(double distanceToTarget) {
+        int newRpm = 3000;
+        if(nectarLauncherEnabled) {
+            launcherTurretNectar.setLauncherRpm(newRpm);
+        }
+        launcherTurretPollen.setLauncherRpm(newRpm);
     }
 }

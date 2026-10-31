@@ -20,64 +20,74 @@ public class HiveTargeting {
     private NumberPlateSensor numberPlateSensor;
 
     public double lastAngleToTarget;
+    public double lastDistanceToTarget;
 
     public HiveTargeting(HardwareMap hardwareMap,Follower follower) {
         numberPlateSensor = new NumberPlateSensor(hardwareMap);
         this.follower = follower;
     }
-
-    public double getAngleToTarget() {
-        Pose robotPose = follower.pose();
-
+    private Pose findClosestTarget(Pose robotPose) {
         double hiveBlueAudienceDistance = calculateDistanceToTarget(robotPose, hiveBlueAudience);
         double hiveBlueScoringDistance = calculateDistanceToTarget(robotPose, hiveBlueScoring);
         double hiveRedAudienceDistance = calculateDistanceToTarget(robotPose, hiveRedAudience);
         double hiveRedScoringDistance = calculateDistanceToTarget(robotPose, hiveRedScoring);
 
         if (numberPlateSensor.isNumberPlateBlue()) {
-            Pose target;
             if (hiveBlueScoringDistance < hiveBlueAudienceDistance) {
-                target = hiveBlueScoring;
+                return hiveBlueScoring;
             } else {
-                target = hiveBlueAudience;
+                return hiveBlueAudience;
             }
-            lastAngleToTarget = calculateAngleToTarget(robotPose, target);
         } else {
-            Pose targetB;
             if (hiveRedScoringDistance < hiveRedAudienceDistance) {
-                targetB = hiveRedScoring;
+                return hiveRedScoring;
             } else {
-                targetB = hiveRedAudience;
+                return hiveRedAudience;
             }
-            lastAngleToTarget = calculateAngleToTarget(robotPose, targetB);
         }
+    }
+
+    public double getAngleToTarget() {
+        Pose robotPose = follower.pose();
+        Pose target = findClosestTarget(robotPose);
+        lastAngleToTarget = calculateAngleToTarget(robotPose, target);
+
+
         return lastAngleToTarget;
     }
-        public void outputTelemetry(Telemetry telemetry){
-            telemetry.addData("Robot X", follower.pose().x());
-            telemetry.addData("Robot Y", follower.pose().y());
-            telemetry.addData("Robot Heading", Math.toDegrees(follower.pose().heading()));
-            telemetry.addData("Target Heading Blue", lastAngleToTarget);
+    public double getDistanceToTarget() {
+        Pose robotPose = follower.pose();
+        Pose target = findClosestTarget(robotPose);
+        lastDistanceToTarget = calculateDistanceToTarget(robotPose, target);
 
-        }
-        private double calculateAngleToTarget(Pose robotPose, Pose targetPose) {
-            double deltaX = targetPose.x() - robotPose.x();
-            double deltaY = targetPose.y() - robotPose.y();
-            double absoluteTargetHeading = Math.atan2(deltaY, deltaX);
 
-            double relativeTargetHeading = absoluteTargetHeading - robotPose.heading();
-
-            while (relativeTargetHeading > Math.PI) relativeTargetHeading -= 2 * Math.PI;
-            while (relativeTargetHeading < -Math.PI) relativeTargetHeading += 2 * Math.PI;
-
-            double turretAngleRad = (Math.PI / 2.0) + relativeTargetHeading;
-
-            double TWO_PI = 2.0 * Math.PI;
-            turretAngleRad = (turretAngleRad % TWO_PI + TWO_PI) % TWO_PI;
-
-            return Math.toDegrees(turretAngleRad);
-        }
-        private double calculateDistanceToTarget(Pose robotPose, Pose targetPose) {
-            return Math.hypot(targetPose.x() - robotPose.x(), targetPose.y() - robotPose.y());
-        }
+        return lastDistanceToTarget;
     }
+    public void outputTelemetry(Telemetry telemetry){
+        telemetry.addData("Robot X", follower.pose().x());
+        telemetry.addData("Robot Y", follower.pose().y());
+        telemetry.addData("Robot Heading", Math.toDegrees(follower.pose().heading()));
+        telemetry.addData("Target Heading", lastAngleToTarget);
+        telemetry.addData("Target Distance", lastDistanceToTarget);
+    }
+    private double calculateAngleToTarget(Pose robotPose, Pose targetPose) {
+        double deltaX = targetPose.x() - robotPose.x();
+        double deltaY = targetPose.y() - robotPose.y();
+        double absoluteTargetHeading = Math.atan2(deltaY, deltaX);
+
+        double relativeTargetHeading = absoluteTargetHeading - robotPose.heading();
+
+        while (relativeTargetHeading > Math.PI) relativeTargetHeading -= 2 * Math.PI;
+        while (relativeTargetHeading < -Math.PI) relativeTargetHeading += 2 * Math.PI;
+
+        double turretAngleRad = (Math.PI / 2.0) + relativeTargetHeading;
+
+        double TWO_PI = 2.0 * Math.PI;
+        turretAngleRad = (turretAngleRad % TWO_PI + TWO_PI) % TWO_PI;
+
+        return Math.toDegrees(turretAngleRad);
+    }
+    private double calculateDistanceToTarget(Pose robotPose, Pose targetPose) {
+        return Math.hypot(targetPose.x() - robotPose.x(), targetPose.y() - robotPose.y());
+    }
+}
