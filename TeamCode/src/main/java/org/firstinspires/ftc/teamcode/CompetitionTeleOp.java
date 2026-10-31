@@ -14,6 +14,44 @@ import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 
 @TeleOp(name = "CompetitionTeleOp")
 public class CompetitionTeleOp extends OpMode {
+     /*
+      Control hub
+        Motors
+            Port 0 : lf (GoBILDA 5202/3/4 series)
+            Port 1 : lb (GoBILDA 5202/3/4 series)
+            Port 2 : rb (GoBILDA 5202/3/4 series)
+            Port 3 : rl (GoBILDA 5202/3/4 series)
+        Servos
+            Port 0 : lfTurn (Continuous Rotation Servo)
+            Port 1 : lbTurn (Continuous Rotation Servo)
+            Port 2 : rbTurn (Continuous Rotation Servo)
+            Port 2 : rfTurn (Continuous Rotation Servo)
+        Analog input Devise
+            Port 0 : lfTurnEncoder (Analog input)
+            Port 1 : lbTurnEncoder (Analog input)
+            Port 2 : rbTurnEncoder (Analog input)
+            Port 3 : rfTurnEncoder (Analog input)
+        I2C
+            Port 1 : pinpoint
+
+    Expansion hub
+        Motors
+            Port 0 : flywheelMotorNectar (GoBILDA 5202/3/4 series)
+            Port 1 : flywheelMotorPolllen (GoBILDA 5202/3/4 series)
+            Port 2 : intakeMotor (GoBILDA 5202/3/4 series)
+            Port 3 : pollenTransferMotor (GoBILDA 5202/3/4 series)
+        Servos
+            Port 0 : turrentServoNectar (Continuous Rotation Servo)
+            Port 1 : turrentServoPollen (Continuous Rotation Servo)
+            Port 2 : light (Servo)
+        Digital Devices
+            Port 0 : turretSwitchNectar (Digital Device)
+            Port 1 : turretSwitchPollen (Digital Device)
+            Port 2 : numberPlatesensor (REV Touch Sensor)
+        Analog input Devise
+            Port 0 : turrentEncoderNectar (Analog input)
+            Port 1 : turrentEncoderPollen (Analog input)
+     */
 
     private Intake intake;
     private Follower follower;
