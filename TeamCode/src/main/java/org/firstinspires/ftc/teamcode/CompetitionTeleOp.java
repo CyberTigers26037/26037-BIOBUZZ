@@ -129,6 +129,8 @@ public class CompetitionTeleOp extends OpMode {
         if (autoTracking) {
             double angleToTarget = hiveTargeting.getAngleToTarget();
             turretSystem.setAngle(angleToTarget);
+            double distanceToTarget = hiveTargeting.getDistanceToTarget();
+            turretSystem.adjustRpmForDistance(distanceToTarget);
         }
 
         processGunner();
