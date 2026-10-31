@@ -18,6 +18,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
+import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 
 @Autonomous
 public class SwerveAutoA extends OpMode {
@@ -25,12 +26,14 @@ public class SwerveAutoA extends OpMode {
     private Intake intake;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    // Poses
-    private final Pose startPose = poseFactory.of(82, 131, 270);
-    private final Pose armDropPose = poseFactory.of(82, 127, 270);
+    protected boolean isBlueAlliance;
 
-    private final Pose medianPose = poseFactory.of(132, 96, 270);
-    private final Pose parkPose = poseFactory.of(129, 48, 270);
+
+    // Poses
+    private Pose startPose;
+    private Pose armDropPose;
+    private Pose medianPose;
+    private Pose parkPose;
 
     // Path methods
     private Path startToArmDrop() {
@@ -49,8 +52,28 @@ public class SwerveAutoA extends OpMode {
         );
     }
 
+    private void setUpPoses() {
+        if(isBlueAlliance) {
+            startPose = poseFactory.of(82, 131, 270);
+            armDropPose = poseFactory.of(82, 127, 270);
+            medianPose = poseFactory.of(132, 96, 270);
+            parkPose = poseFactory.of(129, 48, 270);
+        }
+        else {
+            startPose = poseFactory.of(62, 13, 90);
+            armDropPose = poseFactory.of(62, 17, 90);
+            medianPose = poseFactory.of(12, 48, 90);
+            parkPose = poseFactory.of(14, 96, 90);
+        }
+    }
+
     @Override
     public void init() {
+        NumberPlateSensor numberPlateSensor = new NumberPlateSensor(hardwareMap);
+        isBlueAlliance = numberPlateSensor.isNumberPlateBlue();
+
+        setUpPoses();
+
         Scheduler.reset();
 
         follower = Constants.create(hardwareMap);

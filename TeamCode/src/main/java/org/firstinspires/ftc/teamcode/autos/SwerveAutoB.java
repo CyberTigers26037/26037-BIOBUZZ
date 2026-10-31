@@ -16,17 +16,20 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 
 @Autonomous
 public class SwerveAutoB extends OpMode {
     private Follower follower;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    // Poses
-    private final Pose startPose = poseFactory.of(120, 9, 90);
-    private final Pose armDropPose = poseFactory.of(120, 13, 90);
+    protected boolean isBlueAlliance;
 
-    private final Pose parkPose = poseFactory.of(130, 22, 90);
+    // Poses
+    private Pose startPose;
+    private Pose armDropPose;
+
+    private  Pose parkPose;
 
     // Path methods
     private Path startToArmDrop() {
@@ -43,8 +46,27 @@ public class SwerveAutoB extends OpMode {
         );
     }
 
+
+    private void setUpPoses() {
+        if(isBlueAlliance) {
+            startPose = poseFactory.of(120, 9, 90);
+            armDropPose = poseFactory.of(120, 13, 90);
+            parkPose = poseFactory.of(130, 22, 90);
+        }
+        else {
+            startPose = poseFactory.of(24, 135, 270);
+            armDropPose = poseFactory.of(24, 131, 270);
+            parkPose = poseFactory.of(14, 122, 270);
+        }
+    }
+
     @Override
     public void init() {
+        NumberPlateSensor numberPlateSensor = new NumberPlateSensor(hardwareMap);
+        isBlueAlliance = numberPlateSensor.isNumberPlateBlue();
+
+        setUpPoses();
+
         Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
