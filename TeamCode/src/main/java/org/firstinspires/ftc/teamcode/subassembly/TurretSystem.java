@@ -12,10 +12,14 @@ public class TurretSystem {
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double turretAngle = 90;
 
+    private final boolean nectarLauncherEnabled = false;
 
     public TurretSystem (HardwareMap hardwareMap) {
-        launcherTurret1 = new LauncherTurret(hardwareMap, "1");
-        launcherTurret2 = new LauncherTurret(hardwareMap, "2");
+        if(nectarLauncherEnabled) {
+            launcherTurret1 = new LauncherTurret(hardwareMap, "Nectar");
+        }
+        launcherTurret2 = new LauncherTurret(hardwareMap, "Pollen");
+
     }
 
     public void loop (double joystickAmount) {
@@ -25,28 +29,37 @@ public class TurretSystem {
             turretAngle += joystickAmount * 90 * dt;
             turretAngle = Range.clip(turretAngle, 0, 180);
         }
-        launcherTurret1.setTurretAngle(turretAngle);
+
+        if(nectarLauncherEnabled) {
+            launcherTurret1.setTurretAngle(turretAngle);
+            launcherTurret1.loop();
+        }
         launcherTurret2.setTurretAngle(turretAngle);
-        launcherTurret1.loop();
         launcherTurret2.loop();
     }
 
 
 
     public void toggleLauncher() {
-        launcherTurret1.toggleLauncher();
+        if(nectarLauncherEnabled) {
+            launcherTurret1.toggleLauncher();
+        }
         launcherTurret2.toggleLauncher();
     }
 
     public void adjustLauncherRpm(int amount) {
         int currpm = launcherTurret1.getLauncherRpm();
-        launcherTurret1.setLauncherRpm(currpm + amount);
+        if(nectarLauncherEnabled) {
+            launcherTurret1.setLauncherRpm(currpm + amount);
+        }
         launcherTurret2.setLauncherRpm(currpm + amount);
     }
 
     public void outputTelemetry(Telemetry telemetry) {
         telemetry.addData("turretangle", turretAngle);
-        launcherTurret1.outputTelemetry(telemetry);
+        if(nectarLauncherEnabled) {
+            launcherTurret1.outputTelemetry(telemetry);
+        }
         launcherTurret2.outputTelemetry(telemetry);
     }
 
