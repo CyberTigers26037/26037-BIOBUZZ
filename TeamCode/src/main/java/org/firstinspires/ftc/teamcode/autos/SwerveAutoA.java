@@ -27,23 +27,25 @@ public class SwerveAutoA extends OpMode {
 
     // Poses
     private final Pose startPose = poseFactory.of(82, 131, 270);
-    private final Pose startLaunchPose = poseFactory.of(82, 121, 270);
-    private final Pose parkPose = poseFactory.of(131, 41, 180);
+    private final Pose armDropPose = poseFactory.of(82, 127, 270);
+
+    private final Pose medianPose = poseFactory.of(132, 96, 270);
+    private final Pose parkPose = poseFactory.of(129, 48, 270);
 
     // Path methods
-    private Path startToDrive() {
-        return curve(startPose, startLaunchPose);
+    private Path startToArmDrop() {
+        return line(startPose, armDropPose).linear(startPose, armDropPose);
     }
-    private Path park(){
-        return curve(parkPose);
+    private Path armDropToPark() {
+        return curve(armDropPose, medianPose, parkPose).linear(armDropPose, parkPose);
     }
 
     private Command autoRoutine() {
         return sequential(
-                follow(follower, startToDrive()),
-                intake.getStartIntakeCommand(),
-                follow(follower, park()),
-                intake.getStopIntakeCommand()
+                follow(follower, startToArmDrop()),
+                follow(follower, armDropToPark() )
+                //intake.getStartIntakeCommand(),
+                //intake.getStopIntakeCommand()
         );
     }
 

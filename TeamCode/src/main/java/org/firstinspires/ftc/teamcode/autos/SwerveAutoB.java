@@ -24,15 +24,23 @@ public class SwerveAutoB extends OpMode {
 
     // Poses
     private final Pose startPose = poseFactory.of(120, 9, 90);
+    private final Pose armDropPose = poseFactory.of(120, 13, 90);
+
     private final Pose parkPose = poseFactory.of(130, 22, 90);
 
     // Path methods
-    private Path startToPark() {
-        return line(startPose, parkPose).linear(startPose, parkPose);
+    private Path startToArmDrop() {
+        return line(startPose, armDropPose).linear(startPose, armDropPose);
+    }
+    private Path armDropToPark() {
+        return line(armDropPose, parkPose).linear(armDropPose, parkPose);
     }
 
     private Command autoRoutine() {
-        return sequential(follow(follower, startToPark()));
+        return sequential(
+                follow(follower, startToArmDrop()),
+                follow(follower, armDropToPark())
+        );
     }
 
     @Override
