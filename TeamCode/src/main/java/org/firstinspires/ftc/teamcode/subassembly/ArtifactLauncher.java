@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.config.RobotConfig;
 
 public class ArtifactLauncher {
     private final DcMotorEx flywheelMotor;
-    private int flywheelRpm = 3000;
+    private int flywheelRpm = 3500;
     public boolean isRunning;
     private static final int MIN_RPM =  2000;
     private static final int MAX_RPM = 4500;
