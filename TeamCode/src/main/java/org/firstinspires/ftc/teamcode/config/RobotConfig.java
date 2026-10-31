@@ -13,7 +13,7 @@ public class RobotConfig {
     private static final String ROBOT_SERIAL_COACH_ANTHONY_PROGRAMMING_CHASSIS  = "b59fde0caa12667d";
     private static final String ROBOT_SERIAL_COACH_ANTHONY_BIOBUZZ_REPLICA      = "5838f408422f581c";
     private static final String ROBOT_SERIAL_MILLENNIUM_STARTER_BOT             = "a542e45d0aef5058";
-    private static final String ROBOT_SERIAL_MILLENNIUM_SWERVE                  = "32d62e829b0befa2";
+    private static final String ROBOT_SERIAL_MILLENNIUM_SWERVE                  = "ac1efd2e2277e17f";
 
     private static String robotName = "Unknown";
 

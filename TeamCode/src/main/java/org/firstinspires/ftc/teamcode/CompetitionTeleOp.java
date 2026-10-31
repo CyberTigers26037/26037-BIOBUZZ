@@ -20,7 +20,7 @@ public class CompetitionTeleOp extends OpMode {
             Port 0 : lf (GoBILDA 5202/3/4 series)
             Port 1 : lb (GoBILDA 5202/3/4 series)
             Port 2 : rb (GoBILDA 5202/3/4 series)
-            Port 3 : rl (GoBILDA 5202/3/4 series)
+            Port 3 : rf (GoBILDA 5202/3/4 series)
         Servos
             Port 0 : lfTurn (Continuous Rotation Servo)
             Port 1 : lbTurn (Continuous Rotation Servo)
@@ -32,25 +32,26 @@ public class CompetitionTeleOp extends OpMode {
             Port 2 : rbTurnEncoder (Analog input)
             Port 3 : rfTurnEncoder (Analog input)
         I2C
-            Port 1 : pinpoint
+            Port 0 : imu
+            port 1 : pinpoint (goBUILDA pinpoint Odomitry Computer)
 
     Expansion hub
         Motors
-            Port 0 : flywheelMotorNectar (GoBILDA 5202/3/4 series)
-            Port 1 : flywheelMotorPolllen (GoBILDA 5202/3/4 series)
+            Port 0 : flywheelMotorPollen (GoBILDA 5202/3/4 series)
+            Port 1 : flywheelMotorNectar (GoBILDA 5202/3/4 series)
             Port 2 : intakeMotor (GoBILDA 5202/3/4 series)
             Port 3 : pollenTransferMotor (GoBILDA 5202/3/4 series)
         Servos
-            Port 0 : turrentServoNectar (Continuous Rotation Servo)
-            Port 1 : turrentServoPollen (Continuous Rotation Servo)
+            Port 0 : turretServoPollen (Continuous Rotation Servo)
+            Port 1 : turretServoNectar (Continuous Rotation Servo)
             Port 2 : light (Servo)
         Digital Devices
             Port 0 : turretSwitchNectar (Digital Device)
             Port 1 : turretSwitchPollen (Digital Device)
             Port 2 : numberPlatesensor (REV Touch Sensor)
         Analog input Devise
-            Port 0 : turrentEncoderNectar (Analog input)
-            Port 1 : turrentEncoderPollen (Analog input)
+            Port 0 : turretEncodeePollen (Analog input)
+            Port 1 : turretEncoderNectar (Analog input)
      */
 
     private Intake intake;
