@@ -93,7 +93,7 @@ public class CompetitionTeleOp extends OpMode {
             if (gamepad2.back) {
                 transferSystem.startPollenTransferBackwards();
             } else{
-                if (turretSystem.getRpm() > 0) {
+                if (turretSystem.getMotorRpm() > 0) {
                     transferSystem.startPollenTransfer();
 
                 }

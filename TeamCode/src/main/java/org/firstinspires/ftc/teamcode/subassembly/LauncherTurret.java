@@ -67,11 +67,14 @@ public class LauncherTurret {
 
         turretServo.setTargetRotation(angle * SERVO_DEG_PER_TURRET_DEG);
     }
+    public int getMotorRpm() {
+        return launcher.getMotorRpm();
+    }
     public void setLauncherRpm (int rpm){
         launcher.adjustFlywheelRpm(rpm);
     }
     public int getLauncherRpm(){
-        return launcher.getActualFlywheelRpm();
+        return launcher.getFlywheelRpm();
     }
 
     public void toggleLauncher () {
@@ -92,7 +95,7 @@ public class LauncherTurret {
         telemetry.addData("limitSwitch" + deviceName, limitSwitch.getState());
         telemetry.addData("isInitialized" + deviceName, isInitialized());
         telemetry.addData("turretRpm" + deviceName, launcher.getFlywheelRpm());
-        telemetry.addData("actualTurretRpm" + deviceName, launcher.getActualFlywheelRpm());
+        telemetry.addData("actualTurretRpm" + deviceName, launcher.getMotorRpm());
         telemetry.addLine(turretServo.log());
     }
 }
