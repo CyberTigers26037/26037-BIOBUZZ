@@ -2,24 +2,22 @@ package org.firstinspires.ftc.teamcode.subassembly;
 
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import static com.pedropathing.ivy.commands.Commands.*;
 
-
+@SuppressWarnings("unused")
 public class Intake {
     private final DcMotorEx intakeMotor;
     private boolean isRunning;
     private boolean isRunningInReverse;
-    private Command startIntakeCommand;
-    private Command stopIntakeCommand;
+    private final Command startIntakeCommand;
+    private final Command stopIntakeCommand;
 
 
     public Intake(HardwareMap hwMap) {
         intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
-        startIntakeCommand = instant(() -> start());
-        stopIntakeCommand = instant(() -> stop());
+        startIntakeCommand = instant(this::start);
+        stopIntakeCommand = instant(this::stop);
 
     }
 
