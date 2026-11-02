@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
-
-@TeleOp(name = "CompetitionTeleOp")
+//Every update to this code add an Extra A to the group name.
+@TeleOp(name = "CompetitionTeleOp",group="AAA")
 public class CompetitionTeleOp extends OpMode {
      /*
       Control hub

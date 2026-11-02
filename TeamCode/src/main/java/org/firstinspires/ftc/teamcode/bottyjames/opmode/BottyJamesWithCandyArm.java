@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.bottyjames.opmode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode.bottyjames.subassembly.BottyJamesWormDrive
 
 
 @TeleOp(name= "BottyJamesCandyArm")
-
+@Disabled
 @SuppressWarnings("unused")
 public class BottyJamesWithCandyArm extends LinearOpMode {
     private DcMotor leftDrive = null;

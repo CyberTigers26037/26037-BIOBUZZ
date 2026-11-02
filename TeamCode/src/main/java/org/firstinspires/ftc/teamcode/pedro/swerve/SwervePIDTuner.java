@@ -6,6 +6,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.revhub.drivetrains.CoaxialPod;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
 import com.pedropathing.utils.Angle;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 @Configurable
 @SuppressWarnings("unused")
 @TeleOp
+@Disabled
 public class SwervePIDTuner extends OpMode {
     private static final int INPUT_TIMEOUT_MILLIS = 250;
 

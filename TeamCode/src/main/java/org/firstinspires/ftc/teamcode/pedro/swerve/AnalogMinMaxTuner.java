@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedro.swerve;
 
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author Havish Sripada
  */
 @SuppressWarnings("unused")
+@Disabled
 @TeleOp
 public class AnalogMinMaxTuner extends OpMode {
     //populate the below with your names for the servos and encoders

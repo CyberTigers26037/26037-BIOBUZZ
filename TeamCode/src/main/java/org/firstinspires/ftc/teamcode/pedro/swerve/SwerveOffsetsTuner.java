@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedro.swerve;
 
 import com.pedropathing.follower.Follower;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
  */
 @SuppressWarnings("unused")
 @TeleOp
+@Disabled
 public class SwerveOffsetsTuner extends OpMode {
     boolean debugStringEnabled = false;
     Follower follower;

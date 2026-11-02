@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @Configurable
 @SuppressWarnings("unused")
-@TeleOp(group = "Tuning")
+@TeleOp(group = "Test")
 public class LauncherTuningOpMode extends OpMode {
     private enum MotorSelection {
         FLYWHEEL1,
