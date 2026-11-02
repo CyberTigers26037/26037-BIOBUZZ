@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
+import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 
@@ -63,11 +64,16 @@ public class CompetitionTeleOp extends OpMode {
 
     private TransferSystem transferSystem;
 
+    private NumberPlateSensor numberPlateSensor;
+
     private boolean autoTracking;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(135,135, 270);
+    private final Pose blueRelocalizationPose = poseFactory.of(135,135, 270);
+
+    private final Pose redRelocalizationPose = poseFactory.of(9,9, 90);
 
 
     @Override
@@ -78,6 +84,7 @@ public class CompetitionTeleOp extends OpMode {
         intake = new Intake(hardwareMap);
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
         transferSystem = new TransferSystem(hardwareMap);
+        numberPlateSensor = new NumberPlateSensor(hardwareMap);
     }
 
     private void processGunner(){
@@ -140,7 +147,19 @@ public class CompetitionTeleOp extends OpMode {
     }
 
     private void processDriver(){
+        if(gamepad1.left_stick_button && gamepad1.right_stick_button) {
+            relocalize();
+        }
 
+    }
+
+    private void relocalize() {
+        if(numberPlateSensor.isNumberPlateBlue()) {
+            follower.setPose(blueRelocalizationPose);
+        }
+        else {
+            follower.setPose(redRelocalizationPose);
+        }
     }
 
     @Override
