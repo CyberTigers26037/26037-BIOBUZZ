@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TurretSystem {
     private LauncherTurret launcherTurretNectar;
-    private LauncherTurret launcherTurretPollen;
+    private final LauncherTurret launcherTurretPollen;
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double turretAngle = 90;
 
@@ -75,8 +75,6 @@ public class TurretSystem {
         int newRpm = 3500;
         if (distanceToTarget > 60) {
             newRpm = 3800;
-        } else if(distanceToTarget > 50) {
-            newRpm = 3500;
         }
         if(nectarLauncherEnabled) {
             launcherTurretNectar.setLauncherRpm(newRpm);

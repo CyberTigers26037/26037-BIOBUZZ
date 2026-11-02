@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.subassembly;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@SuppressWarnings("unused")
 public class TransferSystem {
-    private DcMotor pollenTransferMotor;
+    private final DcMotor pollenTransferMotor;
     private boolean isRunningPollen;
+
     private boolean isRunningNectar;
 
     public TransferSystem(HardwareMap hwMap) {

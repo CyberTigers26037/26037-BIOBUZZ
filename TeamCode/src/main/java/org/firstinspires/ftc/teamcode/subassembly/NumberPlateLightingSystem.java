@@ -18,7 +18,7 @@ public class NumberPlateLightingSystem implements OpModeManagerNotifier.Notifica
     private static final double BLUE = 0.611;
     private static final double RED = 0.279;
 
-    private boolean initialized;
+//    private boolean initialized;
     private Servo rgbLight;
 
     @OnCreateEventLoop
@@ -50,7 +50,7 @@ public class NumberPlateLightingSystem implements OpModeManagerNotifier.Notifica
             return;
         }
 
-        initialized = true;
+//        initialized = true;
 
         setLightColor(numberPlateSensor.isNumberPlateBlue());
     }
@@ -71,14 +71,14 @@ public class NumberPlateLightingSystem implements OpModeManagerNotifier.Notifica
 
     @Override
     public void onOpModePreStart(OpMode opMode) {
-        if (!initialized) return;
+//        if (!initialized) return;
 
 //        rgbLight.setPosition(OFF);
     }
 
     @Override
     public void onOpModePostStop(OpMode opMode) {
-        if (!initialized) return;
+//        if (!initialized) return;
 
 //        rgbLight.setPosition(OFF);
     }

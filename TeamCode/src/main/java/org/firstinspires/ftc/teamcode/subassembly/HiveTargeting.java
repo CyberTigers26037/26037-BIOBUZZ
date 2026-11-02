@@ -4,9 +4,9 @@ import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@SuppressWarnings("unused")
 public class HiveTargeting {
     private static final double FIELD_CENTER = 72;
     private static final double HIVE_OFFSET_X = 12.75;
@@ -15,9 +15,9 @@ public class HiveTargeting {
     private static final Pose hiveBlueScoring = PoseFactory.degrees().of(FIELD_CENTER + HIVE_OFFSET_X, FIELD_CENTER + HIVE_OFFSET_Y, 0);
     private static final Pose hiveRedScoring = PoseFactory.degrees().of(FIELD_CENTER - HIVE_OFFSET_X, FIELD_CENTER + HIVE_OFFSET_Y, 0);
     private static final Pose hiveRedAudience = PoseFactory.degrees().of(FIELD_CENTER - HIVE_OFFSET_X, FIELD_CENTER - HIVE_OFFSET_Y, 0);
-    private Follower follower;
+    private final Follower follower;
 
-    private NumberPlateSensor numberPlateSensor;
+    private final NumberPlateSensor numberPlateSensor;
 
     public double lastAngleToTarget;
     public double lastDistanceToTarget;

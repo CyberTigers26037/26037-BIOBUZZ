@@ -8,16 +8,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.servos.RTPAxon;
 
+@SuppressWarnings("unused")
 public class LauncherTurret {
     // Device Config Constants
     private static final double SERVO_DEG_PER_TURRET_DEG = 2.75;
     private boolean isError = false;
 
-    private DigitalChannel limitSwitch;
+    private final DigitalChannel limitSwitch;
     private boolean initialized;
-    private RTPAxon turretServo;
-    private ArtifactLauncher launcher;
-    private String deviceName;
+    private final RTPAxon turretServo;
+    private final ArtifactLauncher launcher;
+    private final String deviceName;
 
     public LauncherTurret(HardwareMap hardwareMap, String devName) {
         deviceName = devName;
@@ -39,7 +40,7 @@ public class LauncherTurret {
     }
 
     public void loop() {
-        if (isError){ return;} //refused to oporate if an error
+        if (isError){ return;} //refused to operate if an error
         if (!initialized) {
             turretServo.setPower(-0.1);
             turretServo.trackAngle();
