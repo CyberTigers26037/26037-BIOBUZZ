@@ -73,13 +73,13 @@ public class NumberPlateLightingSystem implements OpModeManagerNotifier.Notifica
     public void onOpModePreStart(OpMode opMode) {
         if (!initialized) return;
 
-        rgbLight.setPosition(OFF);
+//        rgbLight.setPosition(OFF);
     }
 
     @Override
     public void onOpModePostStop(OpMode opMode) {
         if (!initialized) return;
 
-        rgbLight.setPosition(OFF);
+//        rgbLight.setPosition(OFF);
     }
 }
