@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subassembly.Intake;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 
+@SuppressWarnings("unused")
 @TeleOp(name = "CompetitionTeleOp")
 public class CompetitionTeleOp extends OpMode {
      /*
@@ -124,28 +125,12 @@ public class CompetitionTeleOp extends OpMode {
             }
         }
 
-        if (gamepad2.bWasPressed()){
-
-        }
-
-        if (gamepad2.xWasPressed()) {
-
-        }
-
-        if (gamepad2.yWasPressed()) {
-
-        }
-
         if (gamepad2.dpadUpWasPressed()) {
             turretSystem.adjustLauncherRpm(+ 100);
         }
 
         if (gamepad2.dpadDownWasPressed()) {
             turretSystem.adjustLauncherRpm(- 100);
-        }
-
-        if (gamepad2.dpadRightWasPressed()) {
-
         }
 
         if (gamepad2.dpadLeftWasPressed()) {
