@@ -38,9 +38,8 @@ public class TurretSystem {
         launcherTurretPollen.loop();
     }
 
-
-    public int getRpm(){
-        return launcherTurretPollen.getLauncherRpm();
+    public int getMotorRpm(){
+        return launcherTurretPollen.getMotorRpm();
     }
 
     public void toggleLauncher() {

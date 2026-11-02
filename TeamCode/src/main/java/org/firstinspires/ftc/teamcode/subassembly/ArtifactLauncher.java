@@ -55,7 +55,7 @@ public class ArtifactLauncher {
         isRunning = false;
     }
 
-    public int getActualFlywheelRpm() {
+    public int getMotorRpm() {
         return tpsToRpm(flywheelMotor.getVelocity());
     }
 
@@ -75,7 +75,7 @@ public class ArtifactLauncher {
 
 
     public boolean isLauncherAboveMinSpeed() {
-        return getActualFlywheelRpm() > MIN_RPM;
+        return getMotorRpm() > MIN_RPM;
     }
 }
 
