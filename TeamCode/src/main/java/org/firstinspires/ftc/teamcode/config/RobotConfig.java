@@ -69,7 +69,7 @@ public class RobotConfig {
         isMecanumChassis = false;
         xPodOffset = 96.0;
         yPodOffset = -194.5;
-        xPodDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         foresightConfig = new ForesightConfig(
                 c -> {
