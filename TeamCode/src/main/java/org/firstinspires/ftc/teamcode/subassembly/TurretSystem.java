@@ -92,9 +92,12 @@ public class TurretSystem {
     }
 
     public void adjustRpmForDistance(double distanceToTarget) {
-        int newRpm = 3500;
+        int newRpm = 3200;
+
         if (distanceToTarget > 60) {
-            newRpm = 3800;
+            newRpm = 3500;
+        } else if(distanceToTarget > 50) {
+            newRpm = 3200;
         }
         if(nectarLauncherEnabled) {
             launcherTurretNectar.setLauncherRpm(newRpm);
