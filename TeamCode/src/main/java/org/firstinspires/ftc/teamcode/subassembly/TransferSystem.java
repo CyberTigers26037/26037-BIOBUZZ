@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subassembly;
 
+import static com.pedropathing.ivy.commands.Commands.instant;
+
+import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,8 +13,13 @@ public class TransferSystem {
     private boolean isRunningPollen;
 
     private boolean isRunningNectar;
+    private Command startTransferCommand;
+    private Command stopTransferCommand;
 
     public TransferSystem(HardwareMap hwMap) {
+        startTransferCommand = instant(() -> startPollenTransfer());
+        stopTransferCommand = instant(() -> stopPollenTransfer());
+
         pollenTransferMotor = hwMap.get(DcMotor.class, "pollenTransferMotor");
         pollenTransferMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -78,6 +86,15 @@ public class TransferSystem {
         } else {
             startAllTransfer();
         }
+    }
+
+
+    public Command getStartTransferCommand() {
+        return startTransferCommand;
+    }
+
+    public Command getStopTransferCommand() {
+        return stopTransferCommand;
     }
 
 }

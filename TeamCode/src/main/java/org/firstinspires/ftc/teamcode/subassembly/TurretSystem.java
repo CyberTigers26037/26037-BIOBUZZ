@@ -1,14 +1,21 @@
 package org.firstinspires.ftc.teamcode.subassembly;
 
+import static com.pedropathing.ivy.commands.Commands.instant;
+
+import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+
 public class TurretSystem {
     private LauncherTurret launcherTurretNectar;
     private final LauncherTurret launcherTurretPollen;
+    private final Command startLauncherCommand;
+    private final Command stopLauncherCommand;
+    private final Command waitForLauncherInitCommand;
     private final ElapsedTime loopTimer = new ElapsedTime();
     private double turretAngle = 90;
 
@@ -19,6 +26,11 @@ public class TurretSystem {
             launcherTurretNectar = new LauncherTurret(hardwareMap, "Nectar");
         }
         launcherTurretPollen = new LauncherTurret(hardwareMap, "Pollen");
+
+        startLauncherCommand = instant(this::startLauncher);
+        stopLauncherCommand = instant(this::stopLauncher);
+        waitForLauncherInitCommand = Command.build()
+                .setDone(launcherTurretPollen::isInitialized);
 
     }
 
@@ -48,6 +60,14 @@ public class TurretSystem {
             launcherTurretNectar.toggleLauncher();
         }
         launcherTurretPollen.toggleLauncher();
+    }
+
+    public void startLauncher() {
+        launcherTurretPollen.startLauncher();
+    }
+
+    public void stopLauncher() {
+        launcherTurretPollen.stopLauncher();
     }
 
     public void adjustLauncherRpm(int amount) {
@@ -80,5 +100,17 @@ public class TurretSystem {
             launcherTurretNectar.setLauncherRpm(newRpm);
         }
         launcherTurretPollen.setLauncherRpm(newRpm);
+    }
+
+    public Command getStartLauncherCommand() {
+        return startLauncherCommand;
+    }
+
+    public Command getStopLauncherCommand() {
+        return stopLauncherCommand;
+    }
+
+    public Command getWaitForLauncherInitCommand() {
+        return waitForLauncherInitCommand;
     }
 }

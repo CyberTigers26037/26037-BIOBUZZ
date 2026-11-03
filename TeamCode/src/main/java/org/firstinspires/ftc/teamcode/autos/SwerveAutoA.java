@@ -17,13 +17,18 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.SleepCommand;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
+import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
+import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 
 @Autonomous
 public class SwerveAutoA extends OpMode {
     private Follower follower;
     private Intake intake;
+    private TurretSystem launcher;
+    private TransferSystem transfer;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     protected boolean isBlueAlliance;
@@ -45,10 +50,18 @@ public class SwerveAutoA extends OpMode {
 
     private Command autoRoutine() {
         return sequential(
+                launcher.getWaitForLauncherInitCommand(),
+                launcher.getStartLauncherCommand(),
+                new SleepCommand(1.0),
+                transfer.getStartTransferCommand(),
+                intake.getStartIntakeCommand(),
+                new SleepCommand(3.0),
                 follow(follower, startToArmDrop()),
-                follow(follower, armDropToPark() )
-                //intake.getStartIntakeCommand(),
-                //intake.getStopIntakeCommand()
+                transfer.getStopTransferCommand(),
+                launcher.getStopLauncherCommand(),
+                intake.getStopIntakeCommand(),
+                follow(follower, armDropToPark())
+
         );
     }
 
@@ -75,12 +88,14 @@ public class SwerveAutoA extends OpMode {
         setUpPoses();
 
         Scheduler.reset();
-
         follower = Constants.create(hardwareMap);
         follower.setPose(startPose);
         follower.update();
 
         intake = new Intake(hardwareMap);
+        launcher = new TurretSystem(hardwareMap);
+        transfer = new TransferSystem(hardwareMap);
+
     }
 
     @Override
@@ -91,6 +106,7 @@ public class SwerveAutoA extends OpMode {
     @Override
     public void loop() {
         follower.update();
+        launcher.loop(0);
         Scheduler.execute();
         // add your other methods needed in the loop here
 

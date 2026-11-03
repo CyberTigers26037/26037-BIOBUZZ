@@ -87,6 +87,14 @@ public class LauncherTurret {
 //        launcher.setFlywheelRpm(3000);
     }
 
+    public void startLauncher() {
+        launcher.startFlywheelMotor();
+    }
+
+    public void stopLauncher() {
+        launcher.stopFlywheelMotor();
+    }
+
 
     public void outputTelemetry(Telemetry telemetry) {
         if (isError){
