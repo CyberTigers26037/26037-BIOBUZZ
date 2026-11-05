@@ -67,7 +67,7 @@ public class RobotConfig {
 
         isSwerveChassis = true;
         isMecanumChassis = false;
-        xPodOffset = 96.0;
+        xPodOffset = -128.0;
         yPodOffset = -194.5;
         xPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         yPodDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
