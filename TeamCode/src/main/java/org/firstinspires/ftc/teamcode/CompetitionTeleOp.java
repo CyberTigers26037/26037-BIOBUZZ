@@ -67,7 +67,7 @@ public class CompetitionTeleOp extends OpMode {
 
     private NumberPlateSensor numberPlateSensor;
 
-    private boolean autoTracking;
+    private boolean autoTracking = true;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
