@@ -95,7 +95,7 @@ public class SwerveAutoA extends OpMode {
         intake = new Intake(hardwareMap);
         launcher = new TurretSystem(hardwareMap);
         transfer = new TransferSystem(hardwareMap);
-
+        launcher.setLauncherRpm(3200);
     }
 
     @Override

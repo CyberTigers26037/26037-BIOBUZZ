@@ -78,6 +78,10 @@ public class TurretSystem {
         launcherTurretPollen.setLauncherRpm(currpm + amount);
     }
 
+    public void setLauncherRpm(int rpm) {
+        launcherTurretPollen.setLauncherRpm(rpm);
+    }
+
     public void outputTelemetry(Telemetry telemetry) {
         telemetry.addData("turretangle", turretAngle);
         if(nectarLauncherEnabled) {
