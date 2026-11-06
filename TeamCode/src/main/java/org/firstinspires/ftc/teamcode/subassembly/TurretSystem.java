@@ -108,6 +108,9 @@ public class TurretSystem {
         }
         launcherTurretPollen.setLauncherRpm(newRpm);
     }
+    public boolean isPollenLauncherAtTargetRpm(){
+        return (Math.abs(launcherTurretPollen.getLauncherRpm() - launcherTurretPollen.getMotorRpm()) < 100);
+    }
 
     public Command getStartLauncherCommand() {
         return startLauncherCommand;
