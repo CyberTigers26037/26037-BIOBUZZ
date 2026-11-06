@@ -72,9 +72,9 @@ public class CompetitionTeleOp extends OpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(135,135, 270);
-    private final Pose blueRelocalizationPose = poseFactory.of(135,135, 270);
+    private final Pose blueRelocalizationPose = poseFactory.of(135,9, 90);
 
-    private final Pose redRelocalizationPose = poseFactory.of(9,9, 90);
+    private final Pose redRelocalizationPose = poseFactory.of(9,135, 270);
 
 
     @Override
