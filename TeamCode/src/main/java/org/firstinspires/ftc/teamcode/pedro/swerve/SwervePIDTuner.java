@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedro.swerve;
+/*package org.firstinspires.ftc.teamcode.pedro.swerve;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
  * You should use this to tune your swerve pod PID values
  * @author Havish Sripada
  */
-@Configurable
+/*@Configurable
 @SuppressWarnings("unused")
 @TeleOp
 @Disabled
@@ -165,4 +165,4 @@ public class SwervePIDTuner extends OpMode {
         RIGHT_BACK
     }
 }
-
+*/

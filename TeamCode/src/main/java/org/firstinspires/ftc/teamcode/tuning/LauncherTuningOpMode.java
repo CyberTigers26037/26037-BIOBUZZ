@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning;
+/*package org.firstinspires.ftc.teamcode.tuning;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -124,3 +124,4 @@ public class LauncherTuningOpMode extends OpMode {
         return (int)(tps / MOTOR_TICKS_PER_REVOLUTION * SECONDS_PER_MINUTE);
     }
 }
+*/
