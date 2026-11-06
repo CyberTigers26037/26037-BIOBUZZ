@@ -121,17 +121,7 @@ public class CompetitionTeleOp extends OpMode {
             turretSystem.toggleLauncher();
         }
 
-        if (gamepad2.back && gamepad2.aWasPressed()){
-            intake.startReverse();
-        }
-        else if (gamepad2.aWasPressed()){
-            if(!intake.isRunning()){
-                intake.start();
-            }
-            else{
-                intake.stop();
-            }
-        }
+
 
         if (gamepad2.dpadUpWasPressed()) {
             turretSystem.adjustLauncherRpm(+ 100);
@@ -150,6 +140,18 @@ public class CompetitionTeleOp extends OpMode {
     private void processDriver(){
         if(gamepad1.left_stick_button && gamepad1.right_stick_button) {
             relocalize();
+        }
+
+        if (gamepad1.back && gamepad1.aWasPressed()){
+            intake.startReverse();
+        }
+        else if (gamepad1.aWasPressed()){
+            if(!intake.isRunning()){
+                intake.start();
+            }
+            else{
+                intake.stop();
+            }
         }
 
     }
