@@ -75,8 +75,12 @@ public class CompetitionTeleOp extends OpMode {
     private final Pose blueRelocalizationPose = poseFactory.of(135,9, 90);
 
     private final Pose redRelocalizationPose = poseFactory.of(9,135, 270);
+    private final DriveInputShaper driveShaper = new DriveInputShaper();
 
-
+    @Override
+    public void start() {
+        driveShaper.reset();
+    }
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
@@ -167,12 +171,12 @@ public class CompetitionTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        follower.manual(
+        driveShaper.update(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
                 -gamepad1.right_stick_x
         );
-
+        follower.manual(driveShaper.getForward(), driveShaper.getStrafe(), driveShaper.getTurn());
         follower.update();
         telemetry.addData("leftjoy", gamepad1.left_stick_x);
 
