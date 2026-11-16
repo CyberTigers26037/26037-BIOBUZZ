@@ -39,15 +39,23 @@ public class SwerveAutoC extends OpMode {
     // Poses
     private Pose startPose;
     private Pose armDropPose;
-    private Pose medianPose;
+    private Pose parkMedian;
     private Pose parkPose;
+    private Pose garden;
+    private Pose gardenIntake;
 
     // Path methods
     private Path startToArmDrop() {
         return line(startPose, armDropPose).linear(startPose, armDropPose);
     }
-    private Path armDropToPark() {
-        return curve(armDropPose, medianPose, parkPose).linear(armDropPose, parkPose);
+    private Path armDropToGarden(){
+        return line(armDropPose, garden).linear(armDropPose, garden);
+    }
+    private Path gardenToGardenIntake(){
+        return line(garden, gardenIntake).linear(garden, gardenIntake);
+    }
+    private Path gardenIntakeToPark() {
+        return curve(gardenIntake, parkMedian, parkPose).linear(gardenIntake, parkPose);
     }
 
     private Command startAutoTarget(){
@@ -73,7 +81,12 @@ public class SwerveAutoC extends OpMode {
                 transfer.getStopTransferCommand(),
                 launcher.getStopLauncherCommand(),
                 intake.getStopIntakeCommand(),
-                follow(follower, armDropToPark())
+                follow(follower,armDropToGarden()),
+                intake.getStartIntakeCommand(),
+                follow(follower, gardenToGardenIntake()),
+                new SleepCommand(3.0),
+                follow(follower, gardenIntakeToPark()),
+                intake.getStopIntakeCommand()
 
         );
     }
@@ -81,15 +94,25 @@ public class SwerveAutoC extends OpMode {
     private void setUpPoses() {
         if(isBlueAlliance) {
             startPose = poseFactory.of(109, 131, 270);
-            armDropPose = poseFactory.of(109, 127, 270);
-            medianPose = poseFactory.of(132, 96, 270);
+            armDropPose = poseFactory.of(109, 125, 270);
+            //point2Start = poseFactory.of(109, 125, 270);
+            garden = poseFactory.of(131, 125, 90);
+            //point3Start = poseFactory.of(131, 125, 90);
+            gardenIntake = poseFactory.of(131, 131, 90);
+            //point4Start = poseFactory.of(131, 131, 90);
             parkPose = poseFactory.of(129, 48, 270);
+            parkMedian = poseFactory.of(115, 95, 0);
         }
         else {
-            startPose = poseFactory.of(62, 13, 90);
-            armDropPose = poseFactory.of(62, 17, 90);
-            medianPose = poseFactory.of(12, 48, 90);
-            parkPose = poseFactory.of(14, 96, 90);
+            startPose = poseFactory.of(35, 13, 90);
+            armDropPose = poseFactory.of(35, 19, 90);
+            //point2Start = poseFactory.of(109, 125, 270);
+            garden = poseFactory.of(13, 19, 270);
+            //point3Start = poseFactory.of(131, 125, 90);
+            gardenIntake = poseFactory.of(13, 13, 270);
+            //point4Start = poseFactory.of(131, 131, 90);
+            parkPose = poseFactory.of(15, 96, 90);
+            parkMedian = poseFactory.of(29, 49, 0);
         }
     }
 
