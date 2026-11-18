@@ -69,44 +69,6 @@ public class SwervePIDTuner extends OpMode {
         config.turnController.set(pidController);
     }
 
-    private double convertTargetAngle(double targetAngleRad) {
-        boolean encoderReversed = config.encoderReversed.get();
-
-        // Convert hardware angle to radians and normalize
-        double actualRad = pod.getAngleAfterOffsetRad();
-        actualRad = Angle.normalize(actualRad);
-
-        //if encoder is reversed, ccw (top down) is positive, if unreversed than cw is positive
-        double desiredRad = encoderReversed ? targetAngleRad : (2 * Math.PI - targetAngleRad);
-        desiredRad += Math.PI / 2.0;
-        desiredRad = Angle.normalize(desiredRad);
-
-        // Shortest-path error in radians (signed)
-        double mag = Angle.smallestDifference(actualRad, desiredRad);
-        double dir = Angle.turnDirection(actualRad, desiredRad);
-        double signedRad = (mag == Math.PI) ? -Math.PI : mag * dir;
-
-        // PID uses radians (tune PIDF for radian error)
-        double errorRad = signedRad;
-
-        // Minimize rotation: flip + invert drive if > 90°
-        if (Math.abs(errorRad) > (Math.PI / 2.0)) {
-            // add 180 degrees (pi radians)
-            desiredRad = Angle.normalize(desiredRad + Math.PI);
-
-            // recompute signed error
-            mag = Angle.smallestDifference(actualRad, desiredRad);
-            dir = Angle.turnDirection(actualRad, desiredRad);
-            signedRad = (mag == Math.PI) ? -Math.PI : mag * dir;
-            errorRad = signedRad;
-        }
-
-        telemetryM.addData("actualRad", Math.toDegrees(actualRad));
-        telemetryM.addData("errorRad", Math.toDegrees(errorRad));
-
-        return actualRad + errorRad;
-    }
-
     @Override
     public void loop() {
         PodSelection newPodSelection = podSelection;
@@ -141,8 +103,6 @@ public class SwervePIDTuner extends OpMode {
             pidController.reset();
         }
 
-        double podCorrectedTargetAngle = convertTargetAngle(targetAngle);
-
         pod.move(targetAngle, 0, false);
 
         telemetry.addData("Currently Tuning", podSelection);
@@ -151,9 +111,7 @@ public class SwervePIDTuner extends OpMode {
         telemetry.addData("P", P);
         telemetry.addData("I", I);
         telemetry.addData("D", D);
-        telemetryM.addData("Target Rotation", Math.toDegrees(targetAngle));
-        telemetryM.addData("Target Pod Rotation", Math.toDegrees(podCorrectedTargetAngle));
-        telemetryM.addData("Actual Rotation", Math.toDegrees(pod.getOffsetAngleRad()));
+        telemetryM.addData("error", pidController.getPreviousError());
         telemetryM.update();
     }
 
