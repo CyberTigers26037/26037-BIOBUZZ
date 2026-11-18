@@ -4,6 +4,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This is the SwervePIDTuner
@@ -32,6 +34,7 @@ public class SwervePIDTuner extends OpMode {
     private SwervePIDFController pidController;
     private PodSelection podSelection = PodSelection.RIGHT_FRONT;
     private DataLogger logger;
+    private List<LynxModule> allHubs;
 
     public static double P = 0.35;
     public static double I = 0.0;
@@ -51,6 +54,11 @@ public class SwervePIDTuner extends OpMode {
         setupPodSelection();
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
+
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
     }
 
     private void setupPodSelection() {
@@ -79,6 +87,10 @@ public class SwervePIDTuner extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
+
         PodSelection newPodSelection = podSelection;
         if (gamepad1.xWasPressed()) podSelection = PodSelection.LEFT_FRONT;
         if (gamepad1.yWasPressed()) podSelection = PodSelection.RIGHT_FRONT;
