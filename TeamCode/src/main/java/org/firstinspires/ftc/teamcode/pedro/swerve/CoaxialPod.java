@@ -152,6 +152,10 @@ public class CoaxialPod implements SwervePod {
 
         // Convert hardware angle to radians and normalize
         double actualRad = getAngleAfterOffsetRad();
+        if (!trackAngle(actualRad)) {
+            return;
+        }
+
         actualRad = Angle.normalize(actualRad);
 
         //if encoder is reversed, ccw (top down) is positive, if unreversed than cw is positive
@@ -212,6 +216,35 @@ public class CoaxialPod implements SwervePod {
             lastDrivePower = drivePower;
             driveMotor.setPower(drivePower);
         }
+    }
+
+    private double previousAngle;
+    // Largest believable servo movement between two loops, in servo degrees
+    private static final double MAX_STEP_RAD = Math.toRadians(15);
+    // After this many rejected readings in a row, trust the encoder again so we can't get stuck
+    private static final int MAX_REJECTED_READINGS = 3;
+    private int rejectedReadings = 0;
+
+    // Returns false if the reading was rejected as a glitch
+    public boolean trackAngle(double currentAngle) {
+        double angleDifference = currentAngle - previousAngle;
+
+        // Take the shortest path, so a 0/360 crossing looks like a small step
+        if (angleDifference > Math.PI) {
+            angleDifference -= 2 * Math.PI;
+        } else if (angleDifference < - Math.PI) {
+            angleDifference += 2 * Math.PI;
+        }
+
+        // A big step can't be real motion; it's a reading caught mid-wrap
+        if (Math.abs(angleDifference) > MAX_STEP_RAD && rejectedReadings < MAX_REJECTED_READINGS) {
+            rejectedReadings++;
+            return false;
+        }
+        rejectedReadings = 0;
+
+        previousAngle = currentAngle;
+        return true;
     }
 
     /**
