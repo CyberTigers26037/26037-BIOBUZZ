@@ -7,6 +7,9 @@ import com.pedropathing.utils.Angle;
 import com.pedropathing.utils.Utils;
 import com.qualcomm.robotcore.hardware.*;
 
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +28,7 @@ public class CoaxialPod implements SwervePod {
     private final DcMotorEx driveMotor;
 
     private final CoaxialPodConfig config;
+    private DataLogger logger;
 
     private double lastDrivePower = 0;
     private double lastTurnPower = 0;
@@ -44,6 +48,32 @@ public class CoaxialPod implements SwervePod {
         turnServo.setDirection(config.servoDirection.get());
 
         turnServo.setPower(0);
+    }
+
+    public CoaxialPod(HardwareMap hardwareMap, CoaxialPodConfig config, DataLogger logger) {
+        this(hardwareMap, config);
+
+        if (logger != null) {
+            try {
+                logger.addHeaderLine(
+                        "CoaxialPod",
+                        "targetAngleRad",
+                        "actualRad",
+                        "rejected",
+                        "actualRadAfterNormalize",
+                        "desiredRad",
+                        "desiredRadAfterNormalize",
+                        "signedRad",
+                        "flipped",
+                        "signedRadAfterFlip",
+                        "errorRadBeforeCalculate",
+                        "servoPowerSent",
+                        "servoCachingThreshold"
+                );
+                this.logger = logger;
+            } catch (IOException ignored) {
+            }
+        }
     }
 
     /**
@@ -139,6 +169,20 @@ public class CoaxialPod implements SwervePod {
         return Angle.normalize(t);
     }
 
+    private static class LogData {
+        public double targetAngleRad;
+        public double actualRad;
+        public boolean rejected;
+        public double actualRadAfterNormalize;
+        public double desiredRad;
+        public double desiredRadAfterNormalize;
+        public double signedRad;
+        public boolean flipped;
+        public double signedRadAfterFlip;
+        public double errorRadBeforeCalculate;
+        public double servoPowerSent;
+        public double servoCachingThreshold;
+    }
     /**
      * Commands pod to a wheel heading (radians) with a drive power in [-1, 1].
      *
@@ -150,23 +194,32 @@ public class CoaxialPod implements SwervePod {
     public void move(double targetAngleRad, double drivePower, boolean ignoreAngleChanges) {
         boolean encoderReversed = config.encoderReversed.get();
 
-        // Convert hardware angle to radians and normalize
+        LogData logData = new LogData();
+        logData.targetAngleRad = targetAngleRad;
+
         double actualRad = getAngleAfterOffsetRad();
+        logData.actualRad = actualRad;
         if (!trackAngle(actualRad)) {
+            logData.rejected = true;
+            addLogData(logData);
             return;
         }
 
         actualRad = Angle.normalize(actualRad);
+        logData.actualRadAfterNormalize = actualRad;
 
         //if encoder is reversed, ccw (top down) is positive, if unreversed than cw is positive
         double desiredRad = encoderReversed ? targetAngleRad : (2 * Math.PI - targetAngleRad);
+        logData.desiredRad = desiredRad;
         desiredRad += Math.PI / 2.0;
         desiredRad = Angle.normalize(desiredRad);
+        logData.desiredRadAfterNormalize = desiredRad;
 
         // Shortest-path error in radians (signed)
         double mag = Angle.smallestDifference(actualRad, desiredRad);
         double dir = Angle.turnDirection(actualRad, desiredRad);
         double signedRad = (mag == Math.PI) ? -Math.PI : mag * dir;
+        logData.signedRad = signedRad;
 
         // PID uses radians (tune PIDF for radian error)
         double errorRad = signedRad;
@@ -182,12 +235,15 @@ public class CoaxialPod implements SwervePod {
             dir = Angle.turnDirection(actualRad, desiredRad);
             signedRad = (mag == Math.PI) ? -Math.PI : mag * dir;
             errorRad = signedRad;
+            logData.flipped = true;
+            logData.signedRadAfterFlip = signedRad;
         }
 
         // Setpoint close to current so PID follows shortest path
         double setpointRad = actualRad + errorRad;
 
         double turnPower;
+        logData.errorRadBeforeCalculate = errorRad;
         if (Math.abs(errorRad) < (2.0 * Math.PI / 180.0)) {
             turnPower = Utils.clamp(config.turnController.get().calculate(0, errorRad), -1.0, 1.0);
         } else {
@@ -203,6 +259,8 @@ public class CoaxialPod implements SwervePod {
         double servoCachingThreshold = config.servoCachingThreshold.get();
         double motorCachingThreshold = config.motorCachingThreshold.get();
 
+        logData.servoCachingThreshold = servoCachingThreshold;
+
         // please don't change the next 5 lines took like 5 hours to figure ts out
         if (ignoreAngleChanges) {
             lastTurnPower = 0;
@@ -210,11 +268,37 @@ public class CoaxialPod implements SwervePod {
         } else if (Math.abs(turnPower - lastTurnPower) > servoCachingThreshold || (turnPower == 0 && lastTurnPower != 0)) {
             lastTurnPower = turnPower;
             turnServo.setPower(turnPower);
+            logData.servoPowerSent = turnPower;
         }
 
         if (Math.abs(drivePower - lastDrivePower) > motorCachingThreshold || (drivePower == 0 && lastDrivePower != 0)) {
             lastDrivePower = drivePower;
             driveMotor.setPower(drivePower);
+        }
+        addLogData(logData);
+    }
+
+    private void addLogData(LogData logData) {
+        if (logger == null) return;
+
+        try {
+            logger.addDataLine(
+                    "CoaxialPod",
+                    logData.targetAngleRad,
+                    logData.actualRad,
+                    logData.rejected,
+                    logData.actualRadAfterNormalize,
+                    logData.desiredRad,
+                    logData.desiredRadAfterNormalize,
+                    logData.signedRad,
+                    logData.flipped,
+                    logData.signedRadAfterFlip,
+                    logData.errorRadBeforeCalculate,
+                    logData.servoPowerSent,
+                    logData.servoCachingThreshold
+            );
+        } catch (IOException e) {
+            logger = null;
         }
     }
 
