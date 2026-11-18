@@ -91,6 +91,7 @@ public class Constants {
                 c.podOffset.set(Vector2D.cartesian(1675,1515 ));
                 c.angleOffsetRad.set(Math.toRadians(274));
                 c.encoderReversed.set(true);
+                c.servoCachingThreshold.set(0.005);
             }
     );
 
@@ -108,6 +109,7 @@ public class Constants {
                 c.podOffset.set(Vector2D.cartesian(1675,-1515 ));
                 c.angleOffsetRad.set(Math.toRadians(218.6));
                 c.encoderReversed.set(true);
+                c.servoCachingThreshold.set(0.005);
             }
     );
 
@@ -125,6 +127,7 @@ public class Constants {
                 c.podOffset.set(Vector2D.cartesian(-1675,1515 ));
                 c.angleOffsetRad.set(Math.toRadians(299));
                 c.encoderReversed.set(true);
+                c.servoCachingThreshold.set(0.005);
             }
     );
 
@@ -142,6 +145,7 @@ public class Constants {
                 c.podOffset.set(Vector2D.cartesian(-1675,-1515 ));
                 c.angleOffsetRad.set(Math.toRadians(322.9));
                 c.encoderReversed.set(true);
+                c.servoCachingThreshold.set(0.005);
             }
     );
 }
