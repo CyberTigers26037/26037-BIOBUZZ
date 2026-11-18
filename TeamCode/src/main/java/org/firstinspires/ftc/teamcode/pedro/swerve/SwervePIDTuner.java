@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode.pedro.swerve;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import com.pedropathing.revhub.drivetrains.CoaxialPod;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
-import com.pedropathing.utils.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+
+import java.io.IOException;
 
 /**
  * This is the SwervePIDTuner
@@ -30,6 +31,7 @@ public class SwervePIDTuner extends OpMode {
     private long lastInputMillis;
     private SwervePIDFController pidController;
     private PodSelection podSelection = PodSelection.RIGHT_FRONT;
+    private DataLogger logger;
 
     public static double P = 0.35;
     public static double I = 0.0;
@@ -40,6 +42,12 @@ public class SwervePIDTuner extends OpMode {
 
     @Override
     public void init() {
+        try {
+            logger = new DataLogger("swerve_pid_log");
+        } catch (IOException e) {
+            logger = null;
+        }
+
         setupPodSelection();
 
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -49,23 +57,23 @@ public class SwervePIDTuner extends OpMode {
         switch (podSelection) {
             case LEFT_FRONT:
                 config = Constants.leftFront;
-                pod = new CoaxialPod(hardwareMap, Constants.leftFront);
+                pod = new CoaxialPod(hardwareMap, Constants.leftFront, logger);
                 break;
             case RIGHT_FRONT:
                 config = Constants.rightFront;
-                pod = new CoaxialPod(hardwareMap, Constants.rightFront);
+                pod = new CoaxialPod(hardwareMap, Constants.rightFront, logger);
                 break;
             case LEFT_BACK:
                 config = Constants.leftBack;
-                pod = new CoaxialPod(hardwareMap, Constants.leftBack);
+                pod = new CoaxialPod(hardwareMap, Constants.leftBack, logger);
                 break;
             case RIGHT_BACK:
                 config = Constants.rightBack;
-                pod = new CoaxialPod(hardwareMap, Constants.rightBack);
+                pod = new CoaxialPod(hardwareMap, Constants.rightBack, logger);
                 break;
         }
 
-        pidController = new SwervePIDFController(P, I, D, F, A);
+        pidController = new SwervePIDFController(P, I, D, F, A, logger);
         config.turnController.set(pidController);
     }
 
@@ -113,6 +121,13 @@ public class SwervePIDTuner extends OpMode {
         telemetry.addData("D", D);
         telemetryM.addData("error", pidController.getPreviousError());
         telemetryM.update();
+    }
+
+    @Override
+    public void stop() {
+        if (logger != null) {
+            logger.close();
+        }
     }
 
     private enum PodSelection {
