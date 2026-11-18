@@ -33,6 +33,7 @@ public class SwervePIDFController implements Controller {
         previousTime = currentTime;
 
         if (dt <= 1e-3) {
+            previousError = error;
             return error * kP + integral * kI + Math.signum(error) * kF;
         }
 
@@ -48,6 +49,10 @@ public class SwervePIDFController implements Controller {
         firstUpdate = false;
         double ff = Math.abs(error) > KF_DEADBAND_RAD ? Math.signum(error) * kF : 0.0;
         return error * kP + integral * kI + filteredDerivative * kD + ff;
+    }
+
+    public double getPreviousError() {
+        return previousError;
     }
 
     public void reset() {
