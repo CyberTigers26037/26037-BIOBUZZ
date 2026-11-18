@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.pedro.swerve;
 import com.pedropathing.controllers.Controller;
 
 public class SwervePIDFController implements Controller {
+    private static final double KF_DEADBAND_RAD = Math.toRadians(1.5);
     public double kP;
     public double kI;
     public double kD;
@@ -45,7 +46,8 @@ public class SwervePIDFController implements Controller {
 
         previousError = error;
         firstUpdate = false;
-        return error * kP + integral * kI + filteredDerivative * kD + Math.signum(error) * kF;
+        double ff = Math.abs(error) > KF_DEADBAND_RAD ? Math.signum(error) * kF : 0.0;
+        return error * kP + integral * kI + filteredDerivative * kD + ff;
     }
 
     public void reset() {
