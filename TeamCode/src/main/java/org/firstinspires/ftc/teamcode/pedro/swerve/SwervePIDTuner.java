@@ -36,9 +36,9 @@ public class SwervePIDTuner extends OpMode {
     private DataLogger logger;
     private List<LynxModule> allHubs;
 
-    public static double P = 0.3;
+    public static double P = 0.35;
     public static double I = 0.0;
-    public static double D = 0.03;
+    public static double D = 0.0325;
     public static double F = 0.06;
     public static double A = 0.4;
     public static double ANGLE_DELTA = 45;

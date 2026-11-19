@@ -7,7 +7,13 @@ import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import java.io.IOException;
 
 public class SwervePIDFController implements Controller {
+    // F is 0 inside the deadband and ramps up to full kF by KF_RAMP_END_RAD. Switching F on all
+    // at once near the target acts like an on/off switch and makes the pod oscillate.
     private static final double KF_DEADBAND_RAD = Math.toRadians(1.5);
+    private static final double KF_RAMP_END_RAD = Math.toRadians(5);
+    // If the encoder hasn't reported a new value for this long, assume the pod has stopped
+    // instead of holding on to the last speed we saw
+    private static final double MAX_STALE_SECONDS = 0.1;
     public double kP;
     public double kI;
     public double kD;
@@ -18,6 +24,9 @@ public class SwervePIDFController implements Controller {
     private double previousDerivative = 0.0;
     private long previousTime = System.nanoTime();
     private boolean firstUpdate = true;
+    // Last encoder reading that was different from the one before it, and when it arrived
+    private double previousMeasurement = 0.0;
+    private long previousMeasurementTime = System.nanoTime();
     private DataLogger logger;
 
     public SwervePIDFController(double kP, double kI, double kD, double kF, double kA) {
@@ -30,7 +39,7 @@ public class SwervePIDFController implements Controller {
         if (logger == null) return;
 
         try {
-            logger.addHeaderLine("SwervePIDFController", "kP", "kI", "kD", "kF", "kA", "error", "dt", "currentDerivative", "previousDerivative", "filteredDerivative", "integral", "result");
+            logger.addHeaderLine("SwervePIDFController", "kP", "kI", "kD", "kF", "kA", "error", "dt", "currentDerivative", "previousDerivative", "filteredDerivative", "integral", "result", "measurementRad", "newReading", "measurementDt");
             this.logger = logger;
         } catch (IOException ignored) {
         }
@@ -44,6 +53,9 @@ public class SwervePIDFController implements Controller {
         public double filteredDerivative;
         public double integral;
         public double result;
+        public double measurement;
+        public boolean newReading;
+        public double measurementDt;
     }
 
     private void logData(LogData logData) {
@@ -63,7 +75,10 @@ public class SwervePIDFController implements Controller {
                     logData.previousDerivative,
                     logData.filteredDerivative,
                     logData.integral,
-                    logData.result
+                    logData.result,
+                    logData.measurement,
+                    logData.newReading,
+                    logData.measurementDt
             );
         } catch (IOException e) {
             logger = null;
@@ -78,9 +93,29 @@ public class SwervePIDFController implements Controller {
         this.kA = kA;
     }
 
+    /**
+     * Without a measurement, fall back to taking the derivative of the error. Since
+     * error = target - measurement, -error moves exactly like the measurement while the
+     * target holds still. Target changes and flips will cause a derivative kick here.
+     */
     public double calculate(double target, double error) {
+        return calculate(target, error, -error);
+    }
+
+    /**
+     * PIDF with "derivative on measurement": D is computed from how fast the pod is actually
+     * turning, not how fast the error is changing. Changing the target or flipping the pod
+     * makes the error jump, but the pod itself didn't move, so D stays calm.
+     *
+     * @param target unused, kept for the Controller interface
+     * @param error target - measurement, shortest path, in radians
+     * @param measurementRad current pod angle in radians
+     */
+    @Override
+    public double calculate(double target, double error, double measurementRad) {
         LogData logData = new LogData();
         logData.error = error;
+        logData.measurement = measurementRad;
 
         long currentTime = System.nanoTime();
         double dt = (currentTime - previousTime) * 1e-9;
@@ -88,7 +123,7 @@ public class SwervePIDFController implements Controller {
         logData.dt = dt;
 
         if (dt <= 1e-3) {
-            double result = error * kP + integral * kI + Math.signum(error) * kF;
+            double result = error * kP + integral * kI + feedforward(error);
             logData.integral = integral;
             logData.result = result;
             logData(logData);
@@ -97,9 +132,39 @@ public class SwervePIDFController implements Controller {
         }
 
         double filteredDerivative = 0.0F;
-        if (!firstUpdate) {
-            double currentDerivative = (error - previousError) / dt;
-            filteredDerivative = kA * currentDerivative + (1.0-kA) * previousDerivative;
+        if (firstUpdate) {
+            previousMeasurement = measurementRad;
+            previousMeasurementTime = currentTime;
+        } else {
+            // The encoder often reports the same value for a few loops before updating. Only
+            // a new value tells us how far the pod moved, and it moved that far over the whole
+            // time since the last new value, not just this loop's dt.
+            double measurementDt = (currentTime - previousMeasurementTime) * 1e-9;
+            logData.measurementDt = measurementDt;
+
+            double currentDerivative = 0.0;
+            if (measurementRad != previousMeasurement) {
+                double delta = measurementRad - previousMeasurement;
+                // Take the shortest path, so a 0/360 crossing looks like a small step
+                if (delta > Math.PI) {
+                    delta -= 2 * Math.PI;
+                } else if (delta < -Math.PI) {
+                    delta += 2 * Math.PI;
+                }
+
+                // error = target - measurement, so the error shrinks as the measurement grows
+                currentDerivative = -delta / measurementDt;
+                previousMeasurement = measurementRad;
+                previousMeasurementTime = currentTime;
+                logData.newReading = true;
+                filteredDerivative = kA * currentDerivative + (1.0 - kA) * previousDerivative;
+            } else if (measurementDt > MAX_STALE_SECONDS) {
+                // No new reading for a long time: the pod has stopped, let D fade toward 0
+                filteredDerivative = (1.0 - kA) * previousDerivative;
+            } else {
+                // Same reading as last loop: no new information, keep the speed we had
+                filteredDerivative = previousDerivative;
+            }
 
             logData.currentDerivative = currentDerivative;
             logData.previousDerivative = previousDerivative;
@@ -113,11 +178,20 @@ public class SwervePIDFController implements Controller {
 
         previousError = error;
         firstUpdate = false;
-        double ff = Math.abs(error) > KF_DEADBAND_RAD ? Math.signum(error) * kF : 0.0;
-        double result = error * kP + integral * kI + filteredDerivative * kD + ff;
+        double result = error * kP + integral * kI + filteredDerivative * kD + feedforward(error);
         logData.result = result;
         logData(logData);
         return result;
+    }
+
+    /**
+     * The "minimum push" to overcome friction. 0 within KF_DEADBAND_RAD of the target, full kF
+     * beyond KF_RAMP_END_RAD, and a straight line in between.
+     */
+    private double feedforward(double error) {
+        double ramp = (Math.abs(error) - KF_DEADBAND_RAD) / (KF_RAMP_END_RAD - KF_DEADBAND_RAD);
+        ramp = Math.max(0.0, Math.min(1.0, ramp));
+        return Math.signum(error) * kF * ramp;
     }
 
     public double getPreviousError() {
@@ -129,6 +203,7 @@ public class SwervePIDFController implements Controller {
         previousError = 0.0F;
         previousDerivative = 0.0F;
         previousTime = System.nanoTime();
+        previousMeasurementTime = previousTime;
         firstUpdate = true;
     }
 }

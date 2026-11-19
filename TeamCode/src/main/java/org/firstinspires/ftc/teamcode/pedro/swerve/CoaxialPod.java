@@ -33,6 +33,11 @@ public class CoaxialPod implements SwervePod {
     private double lastDrivePower = 0;
     private double lastTurnPower = 0;
 
+    // Error must pass 90° by this much before the flip state changes, so noise
+    // near 90° can't toggle it mid-move
+    private static final double FLIP_HYSTERESIS_RAD = Math.toRadians(15);
+    private boolean flipped = false;
+
     public CoaxialPod(HardwareMap hardwareMap, CoaxialPodConfig config) {
         this.config = config;
 
@@ -224,8 +229,14 @@ public class CoaxialPod implements SwervePod {
         // PID uses radians (tune PIDF for radian error)
         double errorRad = signedRad;
 
-        // Minimize rotation: flip + invert drive if > 90°
-        if (Math.abs(errorRad) > (Math.PI / 2.0)) {
+        // Minimize rotation: flip + invert drive if > 90°, with hysteresis
+        if (!flipped && Math.abs(signedRad) > Math.PI / 2.0 + FLIP_HYSTERESIS_RAD) {
+            flipped = true;
+        } else if (flipped && Math.abs(signedRad) < Math.PI / 2.0 - FLIP_HYSTERESIS_RAD) {
+            flipped = false;
+        }
+
+        if (flipped) {
             // add 180 degrees (pi radians)
             desiredRad = Angle.normalize(desiredRad + Math.PI);
             drivePower = -drivePower;
@@ -245,11 +256,11 @@ public class CoaxialPod implements SwervePod {
         double turnPower;
         logData.errorRadBeforeCalculate = errorRad;
         if (Math.abs(errorRad) < (2.0 * Math.PI / 180.0)) {
-            turnPower = Utils.clamp(config.turnController.get().calculate(0, errorRad), -1.0, 1.0);
+            turnPower = Utils.clamp(config.turnController.get().calculate(0, errorRad, actualRad), -1.0, 1.0);
         } else {
             turnPower = Utils.clamp(
                     config.turnController.get().calculate(
-                            Angle.turnDirection(actualRad, desiredRad), errorRad
+                            Angle.turnDirection(actualRad, desiredRad), errorRad, actualRad
                     ),
                     -1.0,
                     1.0

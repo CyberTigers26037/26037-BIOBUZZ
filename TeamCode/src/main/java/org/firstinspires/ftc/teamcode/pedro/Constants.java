@@ -5,7 +5,7 @@ import com.pedropathing.algorithm.ForesightConfig;
 import com.pedropathing.drivetrain.Drivetrain;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Vector2D;
-import com.pedropathing.revhub.drivetrains.CoaxialPod;
+//import com.pedropathing.revhub.drivetrains.CoaxialPod;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
 import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.config.RobotConfig;
+import org.firstinspires.ftc.teamcode.pedro.swerve.CoaxialPod;
 import org.firstinspires.ftc.teamcode.pedro.swerve.CyberTigersSwerve;
 import org.firstinspires.ftc.teamcode.pedro.swerve.SwervePIDFController;
 
@@ -83,7 +84,7 @@ public class Constants {
                 c.motorName.set("lf");
                 c.servoName.set("lfTurn");
                 c.servoEncoderName.set("lfTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.355, 0.0, 0.021, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.0325, 0.07, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.006);
@@ -101,7 +102,7 @@ public class Constants {
                 c.motorName.set("rf");
                 c.servoName.set("rfTurn");
                 c.servoEncoderName.set("rfTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.36, 0.0, 0.0265, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.0325, 0.08, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
@@ -119,7 +120,7 @@ public class Constants {
                 c.motorName.set("lb");
                 c.servoName.set("lbTurn");
                 c.servoEncoderName.set("lbTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.37, 0.0, 0.0186, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.0325, 0.11, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
@@ -137,7 +138,7 @@ public class Constants {
                 c.motorName.set("rb");
                 c.servoName.set("rbTurn");
                 c.servoEncoderName.set("rbTurnEncoder");
-                c.turnController.set(new SwervePIDFController(0.36, 0.0, 0.024, 0.025, 0.3));
+                c.turnController.set(new SwervePIDFController(0.35, 0.0, 0.0325, 0.09, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.002);
