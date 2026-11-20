@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.servos.AxonServo;
 
 public class Scrabbler {
-    private static final int UP_ANGLE = 0;
-    private static final int DOWN_ANGLE = 90;
+    private static final int UP_ANGLE = 90;
+    private static final int DOWN_ANGLE = 180;
     private AxonServo servo;
     public Scrabbler(HardwareMap hardwareMap) {
         Servo servo = hardwareMap.get(Servo.class, "scrabbler");
@@ -19,5 +19,13 @@ public class Scrabbler {
     public void lower() {
         servo.setTargetAngle(DOWN_ANGLE);
     }
+    public void adjustAngle(double amount) {
+    servo.adjustTargetAngle(amount);
+    }
+
+    public double getAngle() {
+    return servo.getTargetAngle();
+    }
 }
+
 
