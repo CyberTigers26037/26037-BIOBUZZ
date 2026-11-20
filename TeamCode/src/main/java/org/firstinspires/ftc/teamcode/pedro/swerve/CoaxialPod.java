@@ -266,6 +266,11 @@ public class CoaxialPod implements SwervePod {
         // Setpoint close to current so PID follows shortest path
         double setpointRad = actualRad + errorRad;
 
+        Controller turnController = config.turnController.get();
+        if (turnController instanceof SwervePIDFController) {
+            ((SwervePIDFController) turnController).setDrivePower(drivePower);
+        }
+
         double turnPower;
         logData.errorRadBeforeCalculate = errorRad;
         if (Math.abs(errorRad) < (2.0 * Math.PI / 180.0)) {

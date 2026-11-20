@@ -14,12 +14,17 @@ public class SwervePIDFController implements Controller {
     // If the encoder hasn't reported a new value for this long, assume the pod has stopped
     // instead of holding on to the last speed we saw
     private static final double MAX_STALE_SECONDS = 0.1;
+    // Turning a pod whose wheel is rolling takes much less push than turning one that is sitting
+    // still on the floor. F blends from kF (parked) to kFMoving, reaching kFMoving at this drive power.
+    private static final double DRIVE_POWER_FOR_MOVING_F = 0.1;
     private final String instanceId;
     public double kP;
     public double kI;
     public double kD;
     public double kF;
+    public double kFMoving;
     public double kA;
+    private double drivePower = 0.0;
     private double integral = 0.0;
     private double previousError = 0.0;
     private double previousDerivative = 0.0;
@@ -30,9 +35,21 @@ public class SwervePIDFController implements Controller {
     private long previousMeasurementTime = System.nanoTime();
     private DataLogger logger;
 
+    /**
+     * Uses the same F whether the wheel is parked or driving.
+     */
     public SwervePIDFController(String instanceId, double kP, double kI, double kD, double kF, double kA) {
+        this(instanceId, kP, kI, kD, kF, kF, kA);
+    }
+
+    /**
+     * @param kF push needed to start turning the pod while the wheel is parked
+     * @param kFMoving push to use while the wheel is driving
+     */
+    public SwervePIDFController(String instanceId, double kP, double kI, double kD, double kF, double kFMoving, double kA) {
         this.instanceId = instanceId;
         setPIDF(kP, kI, kD, kF, kA);
+        this.kFMoving = kFMoving;
     }
 
     public SwervePIDFController(String instanceId, double kP, double kI, double kD, double kF, double kA, DataLogger logger) {
@@ -46,7 +63,7 @@ public class SwervePIDFController implements Controller {
         if (logger == null) return;
 
         try {
-            logger.addHeaderLine("SwervePIDFController", "instanceId", "kP", "kI", "kD", "kF", "kA", "error", "dt", "currentDerivative", "previousDerivative", "filteredDerivative", "integral", "result", "measurementRad", "newReading", "measurementDt");
+            logger.addHeaderLine("SwervePIDFController", "instanceId", "kP", "kI", "kD", "kF", "kA", "error", "dt", "currentDerivative", "previousDerivative", "filteredDerivative", "integral", "result", "measurementRad", "newReading", "measurementDt", "kFMoving", "drivePower", "activeKF");
         } catch (IOException ignored) {
             this.logger = null;
         }
@@ -86,7 +103,10 @@ public class SwervePIDFController implements Controller {
                     logData.result,
                     logData.measurement,
                     logData.newReading,
-                    logData.measurementDt
+                    logData.measurementDt,
+                    kFMoving,
+                    drivePower,
+                    activeKF()
             );
         } catch (IOException e) {
             logger = null;
@@ -99,6 +119,16 @@ public class SwervePIDFController implements Controller {
         this.kD = kD;
         this.kF = kF;
         this.kA = kA;
+    }
+
+    /**
+     * Tells the controller how hard the wheel is driving, so it can pick between kF and kFMoving.
+     * Call before calculate() each loop.
+     *
+     * @param drivePower drive motor power in [-1, 1]; the sign doesn't matter
+     */
+    public void setDrivePower(double drivePower) {
+        this.drivePower = Math.abs(drivePower);
     }
 
     /**
@@ -193,13 +223,22 @@ public class SwervePIDFController implements Controller {
     }
 
     /**
-     * The "minimum push" to overcome friction. 0 within KF_DEADBAND_RAD of the target, full kF
+     * The "minimum push" to overcome friction. 0 within KF_DEADBAND_RAD of the target, full F
      * beyond KF_RAMP_END_RAD, and a straight line in between.
      */
     private double feedforward(double error) {
         double ramp = (Math.abs(error) - KF_DEADBAND_RAD) / (KF_RAMP_END_RAD - KF_DEADBAND_RAD);
         ramp = Math.max(0.0, Math.min(1.0, ramp));
-        return Math.signum(error) * kF * ramp;
+        return Math.signum(error) * activeKF() * ramp;
+    }
+
+    /**
+     * kF while parked, kFMoving once drive power reaches DRIVE_POWER_FOR_MOVING_F, and a straight
+     * line in between.
+     */
+    private double activeKF() {
+        double moving = Math.min(1.0, drivePower / DRIVE_POWER_FOR_MOVING_F);
+        return kF + (kFMoving - kF) * moving;
     }
 
     public double getPreviousError() {

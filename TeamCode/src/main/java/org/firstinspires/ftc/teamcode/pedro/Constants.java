@@ -84,7 +84,7 @@ public class Constants {
                 c.motorName.set("lf");
                 c.servoName.set("lfTurn");
                 c.servoEncoderName.set("lfTurnEncoder");
-                c.turnController.set(new SwervePIDFController("lf", 0.35, 0.0, 0.0325, 0.07, 0.4));
+                c.turnController.set(new SwervePIDFController("lf", 0.35, 0.0, 0.0325, 0.07, 0.03, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.006);
@@ -102,7 +102,7 @@ public class Constants {
                 c.motorName.set("rf");
                 c.servoName.set("rfTurn");
                 c.servoEncoderName.set("rfTurnEncoder");
-                c.turnController.set(new SwervePIDFController("rf", 0.35, 0.0, 0.0325, 0.08, 0.4));
+                c.turnController.set(new SwervePIDFController("rf", 0.35, 0.0, 0.0325, 0.08, 0.03, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
@@ -120,7 +120,7 @@ public class Constants {
                 c.motorName.set("lb");
                 c.servoName.set("lbTurn");
                 c.servoEncoderName.set("lbTurnEncoder");
-                c.turnController.set(new SwervePIDFController("lb", 0.35, 0.0, 0.0325, 0.11, 0.4));
+                c.turnController.set(new SwervePIDFController("lb", 0.35, 0.0, 0.0325, 0.11, 0.03, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.004);
@@ -138,7 +138,7 @@ public class Constants {
                 c.motorName.set("rb");
                 c.servoName.set("rbTurn");
                 c.servoEncoderName.set("rbTurnEncoder");
-                c.turnController.set(new SwervePIDFController("rb", 0.35, 0.0, 0.0325, 0.09, 0.4));
+                c.turnController.set(new SwervePIDFController("rb", 0.35, 0.0, 0.0325, 0.09, 0.03, 0.4));
                 c.driveDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.servoDirection.set(DcMotorSimple.Direction.FORWARD);
                 c.analogMinVoltage.set(0.002);
