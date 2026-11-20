@@ -46,11 +46,12 @@ public class SwerveAutoD extends OpMode {
     }
 
     private Path armDropToPark() {
-        return curve(armDropPose, medianPose, parkPose).linear(armDropPose, parkPose);
+        return line(armDropPose, parkPose).linear(armDropPose, parkPose);
     }
 
     private Command autoRoutine() {
         return sequential(
+                new SleepCommand(15.0),
                 launcher.getWaitForLauncherInitCommand(),
                 launcher.getStartLauncherCommand(),
                 new SleepCommand(1.0),
@@ -68,15 +69,13 @@ public class SwerveAutoD extends OpMode {
 
     private void setUpPoses() {
         if (isBlueAlliance) {
-            startPose = poseFactory.of(82, 131, 90);
-            armDropPose = poseFactory.of(82, 127, 90);
-            medianPose = poseFactory.of(132, 96, 90);
-            parkPose = poseFactory.of(129, 48, 90);
+            startPose = poseFactory.of(82, 13, 90);
+            armDropPose = poseFactory.of(82, 17, 90);
+            parkPose = poseFactory.of(130, 22, 90);
         } else {
             startPose = poseFactory.of(62, 13, 270);
             armDropPose = poseFactory.of(62, 17, 270);
-            medianPose = poseFactory.of(12, 48, 270);
-            parkPose = poseFactory.of(14, 96, 270);
+            parkPose = poseFactory.of(14, 122, 270);
         }
     }
 
