@@ -62,7 +62,7 @@ public class AxonServo {
     }
 
     public void adjustTargetAngle(double adjustmentInDegrees) {
-        targetAngle += adjustmentInDegrees;
+        targetAngle = getTargetAngle() + adjustmentInDegrees;
         targetAngle = Range.clip(targetAngle, MIN_ANGLE, MAX_ANGLE);
         servo.setPosition(angleToServoPosition(targetAngle));
     }
