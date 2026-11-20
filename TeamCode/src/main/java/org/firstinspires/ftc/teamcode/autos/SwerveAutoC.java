@@ -36,6 +36,7 @@ public class SwerveAutoC extends OpMode {
 
 
 
+
     // Poses
     private Pose startPose;
     private Pose armDropPose;
@@ -60,7 +61,7 @@ public class SwerveAutoC extends OpMode {
 
     private Command startAutoTarget(){
         return Command.build()
-                .setExecute(() -> {
+                .setStart(() -> {
                     double angleToTarget = hiveTargeting.getAngleToTarget();
                     launcher.setAngle(angleToTarget);
                     double distanceToTarget = hiveTargeting.getDistanceToTarget();
@@ -152,6 +153,7 @@ public class SwerveAutoC extends OpMode {
         telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Follower Mode", follower.mode());
         telemetry.update();
+        hiveTargeting.outputTelemetry(telemetry);
 
     }
 
