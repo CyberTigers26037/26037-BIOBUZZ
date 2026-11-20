@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
@@ -12,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subassembly.Intake;
 import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
+
+import java.util.List;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "CompetitionTeleOp",group="AAA")
@@ -57,6 +61,9 @@ public class CompetitionTeleOp extends OpMode {
             Port 1 : turretEncoderNectar (Analog input)
      */
 
+    private ElapsedTime loopTimer;
+    private long loopCount;
+
     private Intake intake;
     private Follower follower;
     private TurretSystem turretSystem;
@@ -66,6 +73,8 @@ public class CompetitionTeleOp extends OpMode {
     private TransferSystem transferSystem;
 
     private NumberPlateSensor numberPlateSensor;
+
+    private List<LynxModule> allHubs;
 
     private boolean autoTracking = true;
 
@@ -80,6 +89,7 @@ public class CompetitionTeleOp extends OpMode {
     @Override
     public void start() {
         driveShaper.reset();
+        loopTimer.reset();
     }
     @Override
     public void init() {
@@ -90,6 +100,11 @@ public class CompetitionTeleOp extends OpMode {
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
         transferSystem = new TransferSystem(hardwareMap);
         numberPlateSensor = new NumberPlateSensor(hardwareMap);
+        loopTimer = new ElapsedTime();
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
     }
 
     private void processGunner(){
@@ -171,6 +186,10 @@ public class CompetitionTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache(); // clear cache each loop
+        }
+
         driveShaper.update(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
@@ -187,6 +206,7 @@ public class CompetitionTeleOp extends OpMode {
             turretSystem.adjustRpmForDistance(distanceToTarget);
         }
 
+
         processGunner();
         processDriver();
 
@@ -194,6 +214,9 @@ public class CompetitionTeleOp extends OpMode {
         turretSystem.loop(gamepad2.right_stick_x);
         turretSystem.outputTelemetry(telemetry);
         hiveTargeting.outputTelemetry(telemetry);
+
+        loopCount++;
+        telemetry.addData("Average Loop Time (ms)", loopTimer.milliseconds() / loopCount);
 
     }
 
