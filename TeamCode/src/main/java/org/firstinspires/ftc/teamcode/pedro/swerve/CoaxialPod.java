@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedro.swerve;
 
+import com.pedropathing.controllers.Controller;
 import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.CoaxialPodConfig;
 import com.pedropathing.revhub.drivetrains.SwervePod;
@@ -58,10 +59,17 @@ public class CoaxialPod implements SwervePod {
     public CoaxialPod(HardwareMap hardwareMap, CoaxialPodConfig config, DataLogger logger) {
         this(hardwareMap, config);
 
+        setDataLogger(logger);
+    }
+
+    public void setDataLogger(DataLogger logger) {
+        this.logger = logger;
+
         if (logger != null) {
             try {
                 logger.addHeaderLine(
                         "CoaxialPod",
+                        "instanceId",
                         "targetAngleRad",
                         "actualRad",
                         "rejected",
@@ -75,9 +83,14 @@ public class CoaxialPod implements SwervePod {
                         "servoPowerSent",
                         "servoCachingThreshold"
                 );
-                this.logger = logger;
             } catch (IOException ignored) {
+                this.logger = null;
             }
+        }
+
+        Controller turnController = config.turnController.get();
+        if (turnController instanceof SwervePIDFController) {
+            ((SwervePIDFController)turnController).setDataLogger(logger);
         }
     }
 
@@ -295,6 +308,7 @@ public class CoaxialPod implements SwervePod {
         try {
             logger.addDataLine(
                     "CoaxialPod",
+                    name,
                     logData.targetAngleRad,
                     logData.actualRad,
                     logData.rejected,

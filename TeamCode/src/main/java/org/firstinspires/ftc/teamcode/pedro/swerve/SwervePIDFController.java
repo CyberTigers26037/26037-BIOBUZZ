@@ -14,6 +14,7 @@ public class SwervePIDFController implements Controller {
     // If the encoder hasn't reported a new value for this long, assume the pod has stopped
     // instead of holding on to the last speed we saw
     private static final double MAX_STALE_SECONDS = 0.1;
+    private final String instanceId;
     public double kP;
     public double kI;
     public double kD;
@@ -29,19 +30,25 @@ public class SwervePIDFController implements Controller {
     private long previousMeasurementTime = System.nanoTime();
     private DataLogger logger;
 
-    public SwervePIDFController(double kP, double kI, double kD, double kF, double kA) {
+    public SwervePIDFController(String instanceId, double kP, double kI, double kD, double kF, double kA) {
+        this.instanceId = instanceId;
         setPIDF(kP, kI, kD, kF, kA);
     }
 
-    public SwervePIDFController(double kP, double kI, double kD, double kF, double kA, DataLogger logger) {
-        this(kP, kI, kD, kF, kA);
+    public SwervePIDFController(String instanceId, double kP, double kI, double kD, double kF, double kA, DataLogger logger) {
+        this(instanceId, kP, kI, kD, kF, kA);
 
+        setDataLogger(logger);
+    }
+
+    public void setDataLogger(DataLogger logger) {
+        this.logger = logger;
         if (logger == null) return;
 
         try {
-            logger.addHeaderLine("SwervePIDFController", "kP", "kI", "kD", "kF", "kA", "error", "dt", "currentDerivative", "previousDerivative", "filteredDerivative", "integral", "result", "measurementRad", "newReading", "measurementDt");
-            this.logger = logger;
+            logger.addHeaderLine("SwervePIDFController", "instanceId", "kP", "kI", "kD", "kF", "kA", "error", "dt", "currentDerivative", "previousDerivative", "filteredDerivative", "integral", "result", "measurementRad", "newReading", "measurementDt");
         } catch (IOException ignored) {
+            this.logger = null;
         }
     }
 
@@ -64,6 +71,7 @@ public class SwervePIDFController implements Controller {
         try {
             logger.addDataLine(
                     "SwervePIDFController",
+                    instanceId,
                     kP,
                     kI,
                     kD,

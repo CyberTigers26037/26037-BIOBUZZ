@@ -81,7 +81,7 @@ public class SwervePIDTuner extends OpMode {
                 break;
         }
 
-        pidController = new SwervePIDFController(P, I, D, F, A, logger);
+        pidController = new SwervePIDFController("tuner", P, I, D, F, A, logger);
         config.turnController.set(pidController);
     }
 

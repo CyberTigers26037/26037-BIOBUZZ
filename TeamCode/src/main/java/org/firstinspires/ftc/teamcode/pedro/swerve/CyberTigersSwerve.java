@@ -6,9 +6,18 @@ import com.pedropathing.revhub.drivetrains.SwerveConfig;
 import com.pedropathing.revhub.drivetrains.SwervePod;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class CyberTigersSwerve extends Swerve {
+    private final List<SwervePod> pods;
+
     public CyberTigersSwerve(HardwareMap hardwareMap, SwerveConfig config, SwervePod... pods) {
         super(hardwareMap, config, pods);
+
+        this.pods = Arrays.asList(pods);
     }
 
     public void applyDrive(DrivePowers powers) {
@@ -21,5 +30,13 @@ public class CyberTigersSwerve extends Swerve {
 
         );
         super.applyDrive(newPowers);
+    }
+
+    public void setDataLogger(DataLogger logger) {
+        for (SwervePod pod: pods) {
+            if (pod instanceof CoaxialPod) {
+                ((CoaxialPod)pod).setDataLogger(logger);
+            }
+        }
     }
 }

@@ -3,15 +3,21 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.swerve.CyberTigersSwerve;
 import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
 import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
+
+import java.io.IOException;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @TeleOp(name = "CompetitionTeleOp",group="AAA")
@@ -56,6 +62,7 @@ public class CompetitionTeleOp extends OpMode {
             Port 0 : turretEncodeePollen (Analog input)
             Port 1 : turretEncoderNectar (Analog input)
      */
+    private DataLogger logger;
 
     private Intake intake;
     private Follower follower;
@@ -66,6 +73,8 @@ public class CompetitionTeleOp extends OpMode {
     private TransferSystem transferSystem;
 
     private NumberPlateSensor numberPlateSensor;
+
+    private List<LynxModule> allHubs;
 
     private boolean autoTracking = true;
 
@@ -84,12 +93,27 @@ public class CompetitionTeleOp extends OpMode {
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
+
+        try {
+            logger = new DataLogger("competition_teleop_swerve_log");
+        } catch (IOException e) {
+            logger = null;
+        }
+        if (follower.drivetrain instanceof CyberTigersSwerve) {
+            ((CyberTigersSwerve)follower.drivetrain).setDataLogger(logger);
+        }
+
         follower.setPose(OpModeStorage.autonomousEndPose != null ? OpModeStorage.autonomousEndPose: start);
         turretSystem = new TurretSystem(hardwareMap);
         intake = new Intake(hardwareMap);
         hiveTargeting = new HiveTargeting(hardwareMap, follower);
         transferSystem = new TransferSystem(hardwareMap);
         numberPlateSensor = new NumberPlateSensor(hardwareMap);
+
+        allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
     }
 
     private void processGunner(){
@@ -171,6 +195,10 @@ public class CompetitionTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
+
         driveShaper.update(
                 -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x,
@@ -197,5 +225,13 @@ public class CompetitionTeleOp extends OpMode {
 
     }
 
-
+    @Override
+    public void stop() {
+        if (logger != null) {
+            logger.close();
+        }
+        if (follower.drivetrain instanceof CyberTigersSwerve) {
+            ((CyberTigersSwerve)follower.drivetrain).setDataLogger(null);
+        }
+    }
 }
