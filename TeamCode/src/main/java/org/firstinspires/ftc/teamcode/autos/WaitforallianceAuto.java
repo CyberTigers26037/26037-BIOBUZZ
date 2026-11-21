@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 
 @Autonomous
-public class SwerveAutoD extends OpMode {
+public class WaitforallianceAuto extends OpMode {
     private Follower follower;
     private Intake intake;
     private TurretSystem launcher;

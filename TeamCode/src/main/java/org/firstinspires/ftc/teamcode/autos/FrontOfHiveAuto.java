@@ -22,58 +22,37 @@ import org.firstinspires.ftc.teamcode.subassembly.Intake;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
 import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
-import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 
 @Autonomous
-public class SwerveAutoC extends OpMode {
+public class FrontOfHiveAuto extends OpMode {
     private Follower follower;
     private Intake intake;
     private TurretSystem launcher;
     private TransferSystem transfer;
     private final PoseFactory poseFactory = PoseFactory.degrees();
-    private HiveTargeting hiveTargeting;
+
     protected boolean isBlueAlliance;
-
-
 
 
     // Poses
     private Pose startPose;
     private Pose armDropPose;
-    private Pose parkMedian;
+    private Pose medianPose;
     private Pose parkPose;
-    private Pose garden;
-    private Pose gardenIntake;
 
     // Path methods
     private Path startToArmDrop() {
         return line(startPose, armDropPose).linear(startPose, armDropPose);
     }
-    private Path armDropToGarden(){
-        return line(armDropPose, garden).linear(armDropPose, garden);
-    }
-    private Path gardenToGardenIntake(){
-        return line(garden, gardenIntake).linear(garden, gardenIntake);
-    }
-    private Path gardenIntakeToPark() {
-        return curve(gardenIntake, parkMedian, parkPose).linear(gardenIntake, parkPose);
+
+    private Path armDropToPark() {
+        return curve(armDropPose, medianPose, parkPose).linear(armDropPose, parkPose);
     }
 
-    private Command startAutoTarget(){
-        return Command.build()
-                .setStart(() -> {
-                    double angleToTarget = hiveTargeting.getAngleToTarget();
-                    launcher.setAngle(angleToTarget);
-                    double distanceToTarget = hiveTargeting.getDistanceToTarget();
-                    launcher.adjustRpmForDistance(distanceToTarget);
-                })
-                .setDone(() -> true);
-    }
     private Command autoRoutine() {
         return sequential(
                 launcher.getWaitForLauncherInitCommand(),
                 launcher.getStartLauncherCommand(),
-                startAutoTarget(),
                 new SleepCommand(1.0),
                 transfer.getStartTransferCommand(),
                 intake.getStartIntakeCommand(),
@@ -82,38 +61,22 @@ public class SwerveAutoC extends OpMode {
                 transfer.getStopTransferCommand(),
                 launcher.getStopLauncherCommand(),
                 intake.getStopIntakeCommand(),
-                follow(follower,armDropToGarden()),
-                intake.getStartIntakeCommand(),
-                follow(follower, gardenToGardenIntake()),
-                new SleepCommand(3.0),
-                follow(follower, gardenIntakeToPark()),
-                intake.getStopIntakeCommand()
+                follow(follower, armDropToPark())
 
         );
     }
 
     private void setUpPoses() {
-        if(isBlueAlliance) {
-            startPose = poseFactory.of(109, 131, 270);
-            armDropPose = poseFactory.of(109, 125, 270);
-            //point2Start = poseFactory.of(109, 125, 270);
-            garden = poseFactory.of(131, 125, 90);
-            //point3Start = poseFactory.of(131, 125, 90);
-            gardenIntake = poseFactory.of(131, 131, 90);
-            //point4Start = poseFactory.of(131, 131, 90);
+        if (isBlueAlliance) {
+            startPose = poseFactory.of(82, 131, 270);
+            armDropPose = poseFactory.of(82, 127, 270);
+            medianPose = poseFactory.of(132, 96, 270);
             parkPose = poseFactory.of(129, 48, 270);
-            parkMedian = poseFactory.of(115, 95, 0);
-        }
-        else {
-            startPose = poseFactory.of(35, 13, 90);
-            armDropPose = poseFactory.of(35, 19, 90);
-            //point2Start = poseFactory.of(109, 125, 270);
-            garden = poseFactory.of(13, 19, 270);
-            //point3Start = poseFactory.of(131, 125, 90);
-            gardenIntake = poseFactory.of(13, 13, 270);
-            //point4Start = poseFactory.of(131, 131, 90);
-            parkPose = poseFactory.of(15, 96, 90);
-            parkMedian = poseFactory.of(29, 49, 0);
+        } else {
+            startPose = poseFactory.of(62, 13, 90);
+            armDropPose = poseFactory.of(62, 17, 90);
+            medianPose = poseFactory.of(12, 48, 90);
+            parkPose = poseFactory.of(14, 96, 90);
         }
     }
 
@@ -133,7 +96,6 @@ public class SwerveAutoC extends OpMode {
         launcher = new TurretSystem(hardwareMap);
         transfer = new TransferSystem(hardwareMap);
         launcher.setLauncherRpm(3200);
-        hiveTargeting = new HiveTargeting(hardwareMap, follower);
     }
 
     @Override
@@ -153,7 +115,6 @@ public class SwerveAutoC extends OpMode {
         telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Follower Mode", follower.mode());
         telemetry.update();
-        hiveTargeting.outputTelemetry(telemetry);
 
     }
 

@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subassembly.NumberPlateSensor;
 
 @Autonomous
-public class SwerveAutoB extends OpMode {
+public class ParkingAuto extends OpMode {
     private Follower follower;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
