@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.config.DebugConfig;
+
 @SuppressWarnings("unused")
 public class RTPAxon {
     // Encoder for servo position feedback
@@ -320,26 +322,33 @@ public class RTPAxon {
     // Log current state for telemetry/debug
     @SuppressLint("DefaultLocale")
     public String log() {
-        return String.format(
-                logPrefix + ": Current Volts: %.3f\n" +
-                logPrefix + ": Current Angle: %.2f\n" +
-                logPrefix + ": Home Angle: %.2f\n" +
-                logPrefix + ": Cliffs: %d\n" +
-                logPrefix + ": Total Rotation: %.2f\n" +
-                logPrefix + ": Target Rotation: %.2f\n" +
-                logPrefix + ": Current Power: %.3f\n" +
-                logPrefix + ": PID Values: P=%.3f I=%.3f D=%.3f\n" +
-                logPrefix + ": PID Terms: Error=%.2f Integral=%.2f",
-                servoEncoder.getVoltage(),
-                getCurrentAngle(),
-                homeAngle,
-                cliffs,
-                totalRotation,
-                targetRotation,
-                power,
-                kP, kI, kD,
-                targetRotation - totalRotation,
-                integralSum
-        );
+        String retString;
+        if (DebugConfig.isDebugEnabled()) {
+            retString = String.format(
+                            logPrefix + ": Current Volts: %.3f\n" +
+                            logPrefix + ": Current Angle: %.2f\n" +
+                            logPrefix + ": Home Angle: %.2f\n" +
+                            logPrefix + ": Cliffs: %d\n" +
+                            logPrefix + ": Total Rotation: %.2f\n" +
+                            logPrefix + ": Target Rotation: %.2f\n" +
+                            logPrefix + ": Current Power: %.3f\n" +
+                            logPrefix + ": PID Values: P=%.3f I=%.3f D=%.3f\n" +
+                            logPrefix + ": PID Terms: Error=%.2f Integral=%.2f",
+                            servoEncoder.getVoltage(),
+                            getCurrentAngle(),
+                            homeAngle,
+                            cliffs,
+                            totalRotation,
+                            targetRotation,
+                            power,
+                            kP, kI, kD,
+                            targetRotation - totalRotation,
+                            integralSum
+            );
+        }
+        else {
+            retString = "";
+        }
+        return retString;
     }
 }

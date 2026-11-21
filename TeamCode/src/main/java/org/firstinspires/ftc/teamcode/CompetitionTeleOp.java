@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.config.DebugConfig;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
@@ -105,6 +106,8 @@ public class CompetitionTeleOp extends OpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+
+
     }
 
     private void processGunner(){
@@ -197,7 +200,6 @@ public class CompetitionTeleOp extends OpMode {
         );
         follower.manual(driveShaper.getForward(), driveShaper.getStrafe(), driveShaper.getTurn());
         follower.update();
-        telemetry.addData("leftjoy", gamepad1.left_stick_x);
 
         if (autoTracking) {
             double angleToTarget = hiveTargeting.getAngleToTarget();
@@ -210,6 +212,7 @@ public class CompetitionTeleOp extends OpMode {
         processGunner();
         processDriver();
 
+
         telemetry.addData("Auto Tracking",autoTracking);
         turretSystem.loop(gamepad2.right_stick_x);
         turretSystem.outputTelemetry(telemetry);
@@ -217,7 +220,7 @@ public class CompetitionTeleOp extends OpMode {
 
         loopCount++;
         telemetry.addData("Average Loop Time (ms)", loopTimer.milliseconds() / loopCount);
-
+        
     }
 
 

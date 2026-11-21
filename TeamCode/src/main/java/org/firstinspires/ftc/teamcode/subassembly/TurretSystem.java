@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.config.DebugConfig;
 
 
 public class TurretSystem {
@@ -31,7 +32,6 @@ public class TurretSystem {
         stopLauncherCommand = instant(this::stopLauncher);
         waitForLauncherInitCommand = Command.build()
                 .setDone(launcherTurretPollen::isInitialized);
-
     }
 
     public void loop (double joystickAmount) {
@@ -83,7 +83,9 @@ public class TurretSystem {
     }
 
     public void outputTelemetry(Telemetry telemetry) {
-        telemetry.addData("turretangle", turretAngle);
+        if(DebugConfig.isDebugEnabled()) {
+            telemetry.addData("turretangle", turretAngle);
+        }
         if(nectarLauncherEnabled) {
             launcherTurretNectar.outputTelemetry(telemetry);
         }

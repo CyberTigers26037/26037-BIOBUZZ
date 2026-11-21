@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.config.DebugConfig;
 import org.firstinspires.ftc.teamcode.servos.RTPAxon;
 
 @SuppressWarnings("unused")
@@ -107,10 +108,12 @@ public class LauncherTurret {
             telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
             telemetry.addData("WARNING TURRET " + deviceName, "<h1><font color ='red'>TURRET LIMIT SWITCH PRESSED</font></h1>");
         }
-        telemetry.addData("limitSwitch" + deviceName, limitSwitch.getState());
-        telemetry.addData("isInitialized" + deviceName, isInitialized());
-        telemetry.addData("turretRpm" + deviceName, launcher.getFlywheelRpm());
-        telemetry.addData("actualTurretRpm" + deviceName, launcher.getMotorRpm());
+        if (DebugConfig.isDebugEnabled()) {
+            telemetry.addData("limitSwitch" + deviceName, limitSwitch.getState());
+            telemetry.addData("isInitialized" + deviceName, isInitialized());
+            telemetry.addData("turretRpm" + deviceName, launcher.getFlywheelRpm());
+            telemetry.addData("actualTurretRpm" + deviceName, launcher.getMotorRpm());
+        }
         telemetry.addLine(turretServo.log());
     }
 }

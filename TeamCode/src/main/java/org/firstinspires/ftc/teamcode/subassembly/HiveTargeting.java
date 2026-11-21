@@ -5,6 +5,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.config.DebugConfig;
 
 @SuppressWarnings("unused")
 public class HiveTargeting {
@@ -64,11 +65,14 @@ public class HiveTargeting {
         return lastDistanceToTarget;
     }
     public void outputTelemetry(Telemetry telemetry){
-        telemetry.addData("Robot X", follower.pose().x());
-        telemetry.addData("Robot Y", follower.pose().y());
-        telemetry.addData("Robot Heading", Math.toDegrees(follower.pose().heading()));
-        telemetry.addData("Target Heading", lastAngleToTarget);
-        telemetry.addData("Target Distance", lastDistanceToTarget);
+        if (DebugConfig.isDebugEnabled()) {
+            telemetry.addData("Robot X", follower.pose().x());
+            telemetry.addData("Robot Y", follower.pose().y());
+            telemetry.addData("Robot Heading", Math.toDegrees(follower.pose().heading()));
+            telemetry.addData("Target Heading", lastAngleToTarget);
+            telemetry.addData("Target Distance", lastDistanceToTarget);
+        }
+
     }
     private double calculateAngleToTarget(Pose robotPose, Pose targetPose) {
         double deltaX = targetPose.x() - robotPose.x();
