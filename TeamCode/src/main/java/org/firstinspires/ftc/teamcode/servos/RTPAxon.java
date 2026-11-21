@@ -18,6 +18,8 @@ public class RTPAxon {
     private final boolean useClosestAngle;
     private final String logPrefix;
 
+    //
+    private Double lastPower;
     // Current power applied to servo
     private double power;
     // Maximum allowed power
@@ -77,10 +79,17 @@ public class RTPAxon {
         cliffs = 0;
     }
 
+    private boolean didPowerChangeEnough() {
+        return (lastPower == null) || (Math.abs(lastPower - power) > 0.005) || (power == 0 && lastPower != 0);
+    }
+
     // Set power to servo, respecting direction and maxPower
     public synchronized void setPower(double power) {
         this.power = Math.max(-maxPower, Math.min(maxPower, power));
-        servo.setPower(this.power);
+        if (didPowerChangeEnough()) {
+            servo.setPower(this.power);
+        }
+        lastPower = this.power;
     }
 
     // Get current power
