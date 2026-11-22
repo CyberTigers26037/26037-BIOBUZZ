@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.internal.files.DataLogger;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.FilteredPinpointDriver;
 import org.firstinspires.ftc.teamcode.pedro.swerve.CyberTigersSwerve;
 import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
@@ -223,6 +224,7 @@ public class CompetitionTeleOp extends OpMode {
         turretSystem.outputTelemetry(telemetry);
         hiveTargeting.outputTelemetry(telemetry);
 
+        telemetry.addData("Average Pinpoint Time (ms)", FilteredPinpointDriver.getAverageUpdateTimeMilliseconds());
     }
 
     @Override
