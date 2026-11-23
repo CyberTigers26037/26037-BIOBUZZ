@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.config;
 
-public class DebugConfig {
-    private static boolean debugEnabled;
+public class DebugConfig{
+    private static boolean debugEnabled = true;
 
 
     public static boolean isDebugEnabled() {

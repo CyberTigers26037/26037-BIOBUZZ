@@ -67,6 +67,9 @@ public class ArtifactLauncher {
     public void setFlywheelRpm(int rpm) {
         flywheelRpm = rpm;
         flywheelRpm = Range.clip(flywheelRpm, MIN_RPM, MAX_RPM);
+        if (isRunning) {
+            flywheelMotor.setVelocity(rpmToTps(flywheelRpm));
+        }
     }
 
 
