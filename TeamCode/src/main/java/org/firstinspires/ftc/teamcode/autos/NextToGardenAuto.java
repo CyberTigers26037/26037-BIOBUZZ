@@ -40,7 +40,6 @@ public class NextToGardenAuto extends OpMode {
     // Poses
     private Pose startPose;
     private Pose armDropPose;
-    private Pose parkMedian;
     private Pose parkPose;
     private Pose garden;
     private Pose gardenIntake;
@@ -105,12 +104,12 @@ public class NextToGardenAuto extends OpMode {
 
         }
         else {
-            startPose = poseFactory.of(35, 13, 90);
-            armDropPose = poseFactory.of(35, 19, 90);
-            garden = poseFactory.of(13, 19, 270);
-            gardenIntake = poseFactory.of(13, 13, 270);
-            parkPose = poseFactory.of(15, 96, 90);
-            controlPoint1 = poseFactory.of(36, 52, 0);
+            startPose = poseFactory.of(32.5, 10.5, 90);
+            armDropPose = poseFactory.of(32.5, 22.5, 90);
+            garden = poseFactory.of(10.5, 22.5, 270);
+            gardenIntake = poseFactory.of(9.5, 15.5, 270);
+            parkPose = poseFactory.of(10.5, 93.5, 90);
+            controlPoint1 = poseFactory.of(33.5, 49.5, 0);
         }
     }
 
