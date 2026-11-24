@@ -149,7 +149,6 @@ public class NextToGardenAuto extends OpMode {
         telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Follower Mode", follower.mode());
         telemetry.update();
-        hiveTargeting.outputTelemetry(telemetry);
 
     }
 
