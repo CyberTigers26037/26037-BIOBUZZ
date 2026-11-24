@@ -6,14 +6,16 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subassembly.HiveAprilTagLimelight;
+
 @TeleOp(name="LimelightTestOpMode", group = "Test")
 public class LimelightTestOpMode extends OpMode {
-    private Limelight3A limelight;
+    private HiveAprilTagLimelight limelight;
 
     @Override
     public void init() {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(8);
+        limelight = new HiveAprilTagLimelight();
+        limelight.init(hardwareMap);
     }
 
     @Override
@@ -23,13 +25,6 @@ public class LimelightTestOpMode extends OpMode {
 
     @Override
     public void loop() {
-        LLResult llResult = limelight.getLatestResult();
-        if (llResult != null && llResult.isValid()) {
-            for (LLResultTypes.FiducialResult fr : llResult.getFiducialResults()) {
-                telemetry.addData("AprilTag ID", fr.getFiducialId());
-            }
-        } else {
-            telemetry.addData("AprilTag ID", "None");
-        }
+        limelight.loop(telemetry);
     }
 }
