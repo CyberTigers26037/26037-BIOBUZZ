@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.config;
 
-public class DebugConfig {
+public class DebugConfig{
+    // change to true to see debug mode
     private static boolean debugEnabled;
 
 

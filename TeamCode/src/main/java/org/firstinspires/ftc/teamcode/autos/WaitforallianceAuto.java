@@ -18,6 +18,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import org.firstinspires.ftc.teamcode.OpModeStorage;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.SleepCommand;
+import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 import org.firstinspires.ftc.teamcode.subassembly.Intake;
 import org.firstinspires.ftc.teamcode.subassembly.TransferSystem;
 import org.firstinspires.ftc.teamcode.subassembly.TurretSystem;
@@ -29,6 +30,7 @@ public class WaitforallianceAuto extends OpMode {
     private Intake intake;
     private TurretSystem launcher;
     private TransferSystem transfer;
+    private HiveTargeting hiveTargeting;
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     protected boolean isBlueAlliance;
@@ -37,8 +39,10 @@ public class WaitforallianceAuto extends OpMode {
     // Poses
     private Pose startPose;
     private Pose armDropPose;
-    private Pose medianPose;
     private Pose parkPose;
+   // private Pose controlPoint1;
+  //  private Pose controlPoint2;
+
 
     // Path methods
     private Path startToArmDrop() {
@@ -48,20 +52,31 @@ public class WaitforallianceAuto extends OpMode {
     private Path armDropToPark() {
         return line(armDropPose, parkPose).linear(armDropPose, parkPose);
     }
+    private Command startAutoTarget(){
+        return Command.build()
+                .setStart(() -> {
+                    double angleToTarget = hiveTargeting.getAngleToTarget();
+                    launcher.setAngle(angleToTarget);
+                    double distanceToTarget = hiveTargeting.getDistanceToTarget();
+                    launcher.adjustRpmForDistance(distanceToTarget);
+                })
+                .setDone(() -> true);
+    }
 
     private Command autoRoutine() {
         return sequential(
+                new SleepCommand(1.0),
+                follow(follower, startToArmDrop()),
                 new SleepCommand(15.0),
                 launcher.getWaitForLauncherInitCommand(),
                 launcher.getStartLauncherCommand(),
-                new SleepCommand(1.0),
                 transfer.getStartTransferCommand(),
                 intake.getStartIntakeCommand(),
-                new SleepCommand(3.0),
-                follow(follower, startToArmDrop()),
+                new SleepCommand(1.0),
                 transfer.getStopTransferCommand(),
                 launcher.getStopLauncherCommand(),
                 intake.getStopIntakeCommand(),
+                new SleepCommand(1.0),
                 follow(follower, armDropToPark())
 
         );
@@ -69,13 +84,16 @@ public class WaitforallianceAuto extends OpMode {
 
     private void setUpPoses() {
         if (isBlueAlliance) {
-            startPose = poseFactory.of(82, 13, 90);
-            armDropPose = poseFactory.of(82, 17, 90);
-            parkPose = poseFactory.of(130, 22, 90);
+            startPose = poseFactory.of(109, 8, 90);
+            armDropPose = poseFactory.of(83, 17, 90);
+            parkPose = poseFactory.of(130, 22, 270);
+           // controlPoint1 = poseFactory.of(134, 43, 90);
+            // controlPoint2 = poseFactory.of(71, 40, 90);
         } else {
             startPose = poseFactory.of(62, 13, 270);
             armDropPose = poseFactory.of(62, 17, 270);
             parkPose = poseFactory.of(14, 122, 270);
+           // controlPoint1 = poseFactory.of(91, 25, 90);
         }
     }
 
