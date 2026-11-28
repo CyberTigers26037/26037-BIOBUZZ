@@ -14,7 +14,7 @@ public class LimelightTestOpMode extends OpMode {
 
     @Override
     public void init() {
-        limelight = new HiveAprilTagLimelight();
+        limelight = new HiveAprilTagLimelight("blue");
         limelight.init(hardwareMap);
     }
 

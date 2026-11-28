@@ -71,6 +71,18 @@ import java.util.List;
 public class HiveAprilTagLimelight{
 
     private Limelight3A limelight;
+    private String color;
+    private Boolean hiveUp;
+    private int tagCount;
+    public HiveAprilTagLimelight(String color) {
+        this.color = color;
+    }
+
+    private String getColor(int num) {
+        if (num >= 30 && num <= 37) {return "red";}
+        else if (num >= 38 && num <= 45) {return "blue";}
+        return "";
+    }
 
 
 
@@ -90,6 +102,10 @@ public class HiveAprilTagLimelight{
             telemetry.addData("Pipeline", "Index: %d, Type: %s", status.getPipelineIndex(), status.getPipelineType());
 
             LLResult result = limelight.getLatestResult();
+
+        telemetry.addData("Tags:", "tagCount: %d, hiveUp: %b", tagCount, hiveUp);
+            tagCount = 0;
+            hiveUp = false;
 
             if (result != null && result.isValid()) {
                 // Access general information
@@ -112,7 +128,11 @@ public class HiveAprilTagLimelight{
                 List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
                 for (LLResultTypes.FiducialResult fr : fiducialResults) {
                     telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
+                    if (getColor ( fr.getFiducialId()).equals(this.color)) {tagCount ++;}
                 }
+                if (tagCount > 1) {hiveUp = true;}
+                else {hiveUp = false;}
+
             } else {
                 telemetry.addData("Limelight", "No data available");
             }
