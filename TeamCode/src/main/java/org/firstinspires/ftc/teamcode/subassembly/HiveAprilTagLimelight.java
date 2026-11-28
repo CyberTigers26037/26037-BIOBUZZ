@@ -44,6 +44,7 @@ import org.firstinspires.ftc.teamcode.subassembly.HiveTargeting;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -74,14 +75,30 @@ public class HiveAprilTagLimelight{
     private String color;
     private Boolean hiveUp;
     private int tagCount;
+    ArrayList<Boolean> tiplist;
     public HiveAprilTagLimelight(String color) {
         this.color = color;
+        tiplist = new ArrayList<Boolean>();
     }
 
     private String getColor(int num) {
         if (num >= 30 && num <= 37) {return "red";}
         else if (num >= 38 && num <= 45) {return "blue";}
         return "";
+    }
+
+    private void addHiveMeasurement( boolean tipped) {
+        tiplist.add(tipped);
+        int count = 0;
+        double avg = 0.0;
+        tiplist = new ArrayList<>( tiplist.subList(Math.max(0, tiplist.size()-10), tiplist.size()));
+        for (Boolean b: tiplist) {
+            count++;
+            avg += b? 1: 0;
+        }
+        avg = avg/count;
+        if (avg > 0.5) {hiveUp = true;}
+        else {hiveUp = false;}
     }
 
 
@@ -103,9 +120,8 @@ public class HiveAprilTagLimelight{
 
             LLResult result = limelight.getLatestResult();
 
-        telemetry.addData("Tags:", "tagCount: %d, hiveUp: %b", tagCount, hiveUp);
+            telemetry.addData("Tags:", "tagCount: %d, hiveUp: %b", tagCount, hiveUp);
             tagCount = 0;
-            hiveUp = false;
 
             if (result != null && result.isValid()) {
                 // Access general information
@@ -130,11 +146,12 @@ public class HiveAprilTagLimelight{
                     telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
                     if (getColor ( fr.getFiducialId()).equals(this.color)) {tagCount ++;}
                 }
-                if (tagCount > 1) {hiveUp = true;}
-                else {hiveUp = false;}
+                if (tagCount >= 1) {addHiveMeasurement(true);}
+                else {addHiveMeasurement(false);}
 
             } else {
                 telemetry.addData("Limelight", "No data available");
+                addHiveMeasurement(false);
             }
 
             telemetry.update();
